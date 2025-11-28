@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A DAY AS AI - Slot Machine</title>
+    <style>
+        /* --- 配色与变量 --- */
+        :root {
+            /* 🟡 鲜艳柠檬黄 */
+            --pop-yellow: #FFEE00; 
+            /* 🟠 活力亮橙色 */
+            --pop-orange: #FF6A3B; 
+            
+            --pop-black: #121212;
+            --pop-white: #ffffff;
+            --pop-bg: #ffffff; 
+            
+            --border-thick: 4px solid var(--pop-black);
+            --border-thin: 2px solid var(--pop-black);
+            --radius-box: 20px;
+            --radius-inner: 10px;
+            --slot-height: 140px; 
+        }
+
+        body {
+            background-color: var(--pop-bg);
+            background-image: radial-gradient(var(--pop-yellow) 2.5px, transparent 2.5px);
+            background-size: 30px 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+            perspective: 1200px;
+            user-select: none; 
+            -webkit-user-select: none;
+        }
+
+        /* 布局容器 */
+        .layout-wrapper {
+            display: flex;
+            align-items: flex-end;
+            position: relative;
+            transform: scale(0.9) translateX(30px); 
+        }
+
+        /* --- 机器主体 --- */
+        .machine-container {
+            position: relative;
+            background-color: var(--pop-yellow);
+            border: var(--border-thick);
+            border-radius: var(--radius-box);
+            padding: 30px 50px 40px 50px;
+            box-shadow: 12px 12px 0 var(--pop-black);
+            width: 720px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10; 
+        }
+
+        /* 标题 */
+        .main-title {
+            font-size: 1.8rem; 
+            font-weight: 700;
+            color: var(--pop-black);
+            margin: 0 0 25px 0;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        /* 
+           ===== 修改重点：轮盘视窗 ===== 
+           1. width 改为 88% (原100%) -> 让框往里收缩
+           2. 增加 margin-bottom 微调间距
+        */
+        .slots-window {
+            width: 88%; /* 关键修改：收缩宽度 */
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            background: var(--pop-black);
+            padding: 25px;
+            border-radius: 16px; /* 稍微加大圆角 */
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .col-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 32%;
+        }
+
+        /* 标签 */
+        .reel-label {
+            color: var(--pop-orange);
+            background: #333333;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            font-weight: 900;
+            border: 1px solid #444;
+        }
+
+        /* 轮盘列 */
+        .reel-col {
+            width: 100%;
+            height: var(--slot-height); 
+            background: var(--pop-white);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 10px 15px -5px rgba(0,0,0,0.3), inset 0 -10px 15px -5px rgba(0,0,0,0.3);
+        }
+
+        .reel-strip {
+            display: flex;
+            flex-direction: column;
+            transform: translateY(0);
+        }
+
+        .slot-item {
+            height: var(--slot-height);
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 5rem; 
+            line-height: 1;
+            /* 防止图片加载失败时文字撑爆布局 */
+            overflow: hidden; 
+        }
+        
+        .slot-item img {
+            max-width: 80%;
+            max-height: 80%;
+            object-fit: contain;
+        }
+
+        .blur-motion { filter: blur(5px); }
+
+        /* 
+           ===== 修改重点：结果显示区 =====
+           为了配合上方收缩，这里也同步设置为 88%
+        */
+        #output-display {
+            background: var(--pop-white);
+            border: var(--border-thin);
+            width: 88%; /* 同步收缩 */
+            min-height: 70px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 12px 20px;
+            margin-top: 25px;
+            font-size: 1rem;
+            line-height: 1.4;
+            color: #333;
+            box-sizing: border-box;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        
+        .highlight { color: var(--pop-orange); font-weight: bold; }
+
+        /* 按钮 */
+        button#spin-btn {
+            background: var(--pop-orange);
+            color: var(--pop-white);
+            border: var(--border-thick);
+            font-size: 1.4rem;
+            padding: 12px 60px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 900;
+            box-shadow: 6px 6px 0 var(--pop-black);
+            margin-top: 30px;
+            transition: all 0.1s;
+            letter-spacing: 1px;
+        }
+
+        button#spin-btn:active {
+            transform: translate(3px, 3px);
+            box-shadow: 3px 3px 0 var(--pop-black);
+        }
+        button#spin-btn:disabled {
+            background: #888;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: translate(3px, 3px);
+        }
+
+        /* --- 把手组件 --- */
+        .handle-assembly {
+            position: relative;
+            width: 60px;
+            height: 220px;
+            margin-left: -10px; 
+            margin-bottom: 60px;
+            z-index: 20; 
+            perspective: 800px;
+        }
+
+        .handle-base {
+            width: 40px;
+            height: 80px;
+            background: #999;
+            border: var(--border-thick);
+            border-left: var(--border-thick); 
+            border-radius: 12px;
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            box-shadow: 6px 6px 0px var(--pop-black);
+            z-index: 1;
+        }
+
+        .handle-stick-group {
+            position: absolute;
+            bottom: 75px;
+            left: 10px;
+            width: 30px;
+            height: 240px;
+            cursor: grab;
+            z-index: 2;
+            transform-origin: bottom center;
+            transform-style: preserve-3d;
+            transform: rotateX(10deg);
+        }
+        
+        .handle-stick-group:active { cursor: grabbing; }
+
+        .handle-pole {
+            width: 14px;
+            height: 200px;
+            background: linear-gradient(90deg, #ccc, #eee, #bbb);
+            border: 3px solid #111;
+            border-radius: 8px;
+            position: absolute;
+            bottom: 0;
+            left: 8px;
+        }
+
+        .handle-knob {
+            width: 80px;
+            height: 80px;
+            background: var(--pop-orange);
+            border: 4px solid var(--pop-black);
+            border-radius: 50%;
+            position: absolute;
+            top: -40px;
+            left: -25px;
+            box-shadow: -2px 2px 0 rgba(0,0,0,0.2);
+            transform-origin: center center;
+            transform: rotateX(-10deg) translateZ(20px); 
+        }
+
+        .handle-knob::after {
+            content: "";
+            position: absolute;
+            top: 15px;
+            left: 18px;
+            width: 18px;
+            height: 18px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .handle-knob::before {
+            content: "";
+            position: absolute;
+            top: 38px;
+            left: 12px;
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .handle-transition { transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .knob-transition { transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+        .pole-pulled-animation { animation: poleAction 0.6s ease-in-out; }
+        @keyframes poleAction {
+            0% { transform: rotateX(10deg); }
+            50% { transform: rotateX(-60deg); } 
+            100% { transform: rotateX(10deg); }
+        }
+
+        .knob-pulled-animation { animation: knobAction 0.6s ease-in-out; }
+        @keyframes knobAction {
+            0% { transform: rotateX(-10deg) translateZ(20px); }
+            50% { transform: rotateX(60deg) translateZ(20px); } 
+            100% { transform: rotateX(-10deg) translateZ(20px); }
+        }
+
+        @media (max-width: 800px) {
+            .machine-container { width: 90vw; padding: 20px; }
+            .col-wrapper { width: 30%; }
+            .slot-item { font-size: 3rem; }
+            .handle-assembly { display: none; }
+            .layout-wrapper { transform: none; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="layout-wrapper">
+        <div class="machine-container">
+            <h1 class="main-title">A DAY AS AI</h1>
+            
+            <div class="slots-window">
+                <!-- 左轮: EMBODIED -->
+                <div class="col-wrapper">
+                    <div class="reel-label">EMBODIED</div>
+                    <div class="reel-col"><div class="reel-strip" id="reel-1"></div></div>
+                </div>
+                <!-- 中轮 -->
+                <div class="col-wrapper">
+                    <div class="reel-label">SENSORY</div>
+                    <div class="reel-col"><div class="reel-strip" id="reel-2"></div></div>
+                </div>
+                <!-- 右轮 -->
+                <div class="col-wrapper">
+                    <div class="reel-label">INTENT</div>
+                    <div class="reel-col"><div class="reel-strip" id="reel-3"></div></div>
+                </div>
+            </div>
+
+            <div id="output-display">System Ready. Drag lever to generate...</div>
+            <button id="spin-btn">GENERATE</button>
+        </div>
+
+        <div class="handle-assembly">
+            <div class="handle-base"></div>
+            <div class="handle-stick-group handle-transition" id="lever-stick">
+                <div class="handle-pole"></div>
+                <div class="handle-knob knob-transition" id="lever-knob"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // DATASETS 配置区
+        // ==========================================
+        const DATASETS = {
+            // 注意：请确保图片文件真实存在于 assets 文件夹中，否则会显示破碎图标
+            embodied: [
+                { type: 'img', value: 'assets/body_1.svg', label: 'Alien Form' },
+                { type: 'img', value: 'assets/body_2.svg', label: 'Wobbly Core' },
+                { type: 'img', value: 'assets/body_3.svg', label: 'Spiky Shell' },
+                { type: 'img', value: 'assets/body_4.svg', label: 'Liquid Body' },
+                { type: 'img', value: 'assets/body_5.svg', label: 'Multi-Eye Entity' },
+            ],
+
+            sensory: [
+                { type: 'icon', value: '👁️', label: 'Visual Input' },
+                { type: 'icon', value: '🌊', label: 'Audio Wave' },
+                { type: 'icon', value: '📡', label: 'Radar Ping' },
+                { type: 'icon', value: '💾', label: 'Raw Data' },
+                { type: 'icon', value: '👃', label: 'Digital Scent' },
+            ],
+
+            intentionality: [
+                { type: 'icon', value: '🎨', label: 'Render Image' },
+                { type: 'icon', value: '💬', label: 'Generate Text' },
+                { type: 'icon', value: '🎵', label: 'Compose Music' },
+                { type: 'icon', value: '🚫', label: 'Reject Task' },
+                { type: 'icon', value: '🚀', label: 'Execute' },
+            ]
+        };
+
+        const SLOT_HEIGHT = 140;
+
+        const REELS = [
+            { el: document.getElementById('reel-1'), data: DATASETS.embodied },
+            { el: document.getElementById('reel-2'), data: DATASETS.sensory },
+            { el: document.getElementById('reel-3'), data: DATASETS.intentionality }
+        ];
+
+        function initReels() {
+            REELS.forEach((reelObj) => {
+                const { el, data } = reelObj;
+                let contentHTML = '';
+                const repeatCount = 20; 
+                for(let i=0; i<repeatCount; i++) {
+                    data.forEach(item => {
+                        if(item.type === 'img') {
+                            contentHTML += `<div class="slot-item"><img src="${item.value}" alt="${item.label}"></div>`;
+                        } else {
+                            contentHTML += `<div class="slot-item">${item.value}</div>`;
+                        }
+                    });
+                }
+                el.innerHTML = contentHTML;
+            });
+        }
+
+        const spinBtn = document.getElementById('spin-btn');
+        const leverStick = document.getElementById('lever-stick');
+        const leverKnob = document.getElementById('lever-knob');
+        const outputDisplay = document.getElementById('output-display');
+        let isSpinning = false;
+
+        // --- Drag Logic ---
+        let isDragging = false;
+        let startY = 0;
+        const START_ANGLE = 10;
+        const MAX_PULL_ANGLE = -60;
+        const MAX_DRAG_PIXELS = 250; 
+        
+        leverStick.addEventListener('mousedown', (e) => {
+            if(isSpinning) return;
+            isDragging = true;
+            startY = e.clientY;
+            leverStick.classList.remove('handle-transition'); 
+            leverStick.classList.remove('pole-pulled-animation'); 
+            leverKnob.classList.remove('knob-transition');
+            leverKnob.classList.remove('knob-pulled-animation');
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if(!isDragging) return;
+            e.preventDefault(); 
+            const deltaY = e.clientY - startY;
+            const dragAmount = Math.max(0, Math.min(deltaY, MAX_DRAG_PIXELS));
+            const progress = dragAmount / MAX_DRAG_PIXELS; 
+            const currentAngle = START_ANGLE - (progress * (START_ANGLE - MAX_PULL_ANGLE));
+            leverStick.style.transform = `rotateX(${currentAngle}deg)`;
+            leverKnob.style.transform = `rotateX(${-currentAngle}deg) translateZ(20px)`;
+        });
+
+        window.addEventListener('mouseup', (e) => {
+            if(!isDragging) return;
+            isDragging = false;
+            leverStick.classList.add('handle-transition');
+            leverKnob.classList.add('knob-transition');
+            const deltaY = e.clientY - startY;
+            leverStick.style.transform = `rotateX(${START_ANGLE}deg)`;
+            leverKnob.style.transform = `rotateX(${-START_ANGLE}deg) translateZ(20px)`;
+            if(deltaY > 100) {
+                startSpin();
+            }
+        });
+
+        // --- Spin Logic ---
+        function startSpin() {
+            if(isSpinning) return;
+            isSpinning = true;
+            spinBtn.disabled = true;
+            spinBtn.innerText = "PROCESSING...";
+            outputDisplay.innerHTML = "Processing reality input...";
+
+            if (!isDragging) { 
+                leverStick.classList.add('pole-pulled-animation');
+                leverKnob.classList.add('knob-pulled-animation');
+                setTimeout(() => { 
+                    leverStick.classList.remove('pole-pulled-animation'); 
+                    leverKnob.classList.remove('knob-pulled-animation'); 
+                }, 600);
+            }
+
+            const results = [];
+            REELS.forEach((reelObj, index) => {
+                const { el, data } = reelObj;
+                const totalItems = data.length;
+                const randomIndex = Math.floor(Math.random() * totalItems);
+                results.push(data[randomIndex]);
+                const targetSet = 15 + index * 2; 
+                const finalIndex = (targetSet * totalItems) + randomIndex;
+                const translateY = -(finalIndex * SLOT_HEIGHT);
+                const duration = 2 + (index * 0.5); 
+                el.style.transition = 'none';
+                el.style.transform = 'translateY(0)';
+                el.offsetHeight; 
+                el.classList.add('blur-motion');
+                el.style.transition = `transform ${duration}s cubic-bezier(0.15, 0.9, 0.3, 1)`;
+                el.style.transform = `translateY(${translateY}px)`;
+                setTimeout(() => {
+                    el.classList.remove('blur-motion');
+                    if (index === REELS.length - 1) finishSpin(results);
+                }, duration * 1000);
+            });
+        }
+
+        function finishSpin(results) {
+            isSpinning = false;
+            spinBtn.disabled = false;
+            spinBtn.innerText = "GENERATE";
+            const text = `
+                AI detects <span class="highlight">${results[0].label}</span> 
+                via <span class="highlight">${results[1].label}</span>, 
+                initiating <span class="highlight">${results[2].label}</span>.
+            `;
+            outputDisplay.innerHTML = text;
+        }
+
+        spinBtn.addEventListener('click', startSpin);
+        initReels();
+    </script>
+</body>
+</html>
