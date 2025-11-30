@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>A DAY AS AI - Slot Machine</title>
     <style>
         /* --- 配色与变量 --- */
@@ -25,7 +25,7 @@
 
         body {
             background-color: var(--pop-bg);
-            /* 背景：仅保留黄色波点，去掉了黑色阴影 */
+            /* 背景：仅保留黄色波点 */
             background-image: radial-gradient(var(--pop-yellow) 2.5px, transparent 2.5px);
             background-size: 30px 30px;
             display: flex;
@@ -45,7 +45,8 @@
             display: flex;
             align-items: flex-end;
             position: relative;
-            transform: scale(0.9) translateX(30px); 
+            transform-origin: center center;
+            margin-left: 20px; 
         }
 
         /* --- 机器主体 --- */
@@ -54,18 +55,18 @@
             background-color: var(--pop-yellow);
             border: var(--border-thick);
             border-radius: var(--radius-box);
-            padding: 30px 50px 40px 50px;
+            /* 调整内边距，让上下稍微紧凑一点，左右宽敞 */
+            padding: 40px 50px; 
             box-shadow: 12px 12px 0 var(--pop-black);
             width: 720px; 
             
-            /* ⭐ 关键修改：定死高度，防止内容变化导致抖动 ⭐ */
-            height: 620px; 
+            /* ⭐ 关键调整：恢复成较扁的比例 (580px) ⭐ */
+            height: 580px; 
+            
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* 让内部元素垂直均匀分布 */
             justify-content: space-between; 
-            
             z-index: 10; 
         }
 
@@ -74,7 +75,7 @@
             font-size: 1.8rem; 
             font-weight: 700;
             color: var(--pop-black);
-            margin: 0; /* margin 交给 justify-content 控制 */
+            margin: 0;
             text-transform: uppercase;
             letter-spacing: 4px;
             font-family: 'Courier New', Courier, monospace;
@@ -82,7 +83,7 @@
 
         /* 轮盘视窗 */
         .slots-window {
-            width: 88%; /* 宽度收缩 */
+            width: 88%; 
             display: flex;
             justify-content: space-between;
             gap: 15px;
@@ -100,7 +101,7 @@
             width: 32%;
         }
 
-        /* 标签：深灰底 + 橙字 */
+        /* 标签 */
         .reel-label {
             color: var(--pop-orange);
             background: #333333;
@@ -124,7 +125,7 @@
             overflow: hidden;
         }
 
-        /* 内阴影遮罩：永远压在图片上面 */
+        /* 内阴影遮罩 */
         .reel-col::after {
             content: "";
             position: absolute;
@@ -172,7 +173,7 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 15px 20px;
+            padding: 10px 20px; /* 稍微减小内边距以适应高度 */
             font-size: 1rem;
             line-height: 1.6;
             color: #333;
@@ -209,14 +210,14 @@
             transform: translate(3px, 3px);
         }
 
-        /* --- 把手组件 (图层置顶) --- */
+        /* --- 把手组件 --- */
         .handle-assembly {
             position: relative;
             width: 60px;
             height: 220px;
             margin-left: -10px; 
             margin-bottom: 60px;
-            z-index: 20; /* 确保在最上层 */
+            z-index: 20; 
             perspective: 800px;
         }
 
@@ -313,14 +314,6 @@
             100% { transform: rotateX(-10deg) translateZ(20px); }
         }
 
-        @media (max-width: 800px) {
-            .machine-container { width: 90vw; padding: 20px; height: auto; min-height: 600px; }
-            .col-wrapper { width: 30%; }
-            .slot-item { font-size: 3rem; }
-            .handle-assembly { display: none; }
-            .layout-wrapper { transform: none; }
-        }
-
     </style>
 </head>
 <body>
@@ -369,7 +362,6 @@
         // DATASETS 配置区
         // ==========================================
         const DATASETS = {
-            // 左轮：具身经验 (35张图片)
             embodied: [
                 { type: 'img', value: 'assets/crop_row_1_col_1.png', label: 'Red Geometry' },
                 { type: 'img', value: 'assets/crop_row_1_col_2.png', label: 'Chair Symbiosis' },
@@ -408,7 +400,6 @@
                 { type: 'img', value: 'assets/crop_row_5_col_7.png', label: 'Balance Object' },
             ],
 
-            // 中轮：感官知觉 (14张图片)
             sensory: [
                 { type: 'img', value: 'assets/Layer 1.png', label: 'Optical Sensor' },      
                 { type: 'img', value: 'assets/Layer 2.png', label: 'Thermal Vision' },      
@@ -426,7 +417,6 @@
                 { type: 'img', value: 'assets/Layer 14.png', label: 'Chemical Taste' },     
             ],
 
-            // 右轮：意向性
             intentionality: [
                 { type: 'icon', value: '🔑', label: 'Stop Lost Keys' },
                 { type: 'icon', value: '🪴', label: 'Boost Plant Happiness' },
@@ -497,6 +487,30 @@
         const leverKnob = document.getElementById('lever-knob');
         const outputDisplay = document.getElementById('output-display');
         let isSpinning = false;
+
+        // --- Window Resize Logic (自适应缩放) ---
+        function resizeGame() {
+            const wrapper = document.querySelector('.layout-wrapper');
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+
+            const baseWidth = 900; 
+            const baseHeight = 750;
+
+            const scale = Math.min(
+                windowWidth / baseWidth,
+                windowHeight / baseHeight
+            ) * 0.9;
+
+            const finalScale = Math.min(scale, 1.2);
+
+            wrapper.style.transform = `scale(${finalScale})`;
+        }
+
+        window.addEventListener('resize', resizeGame);
+        window.addEventListener('load', resizeGame);
+        resizeGame();
+
 
         // --- Drag Logic ---
         let isDragging = false;
