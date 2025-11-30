@@ -25,6 +25,7 @@
 
         body {
             background-color: var(--pop-bg);
+            /* 背景：仅保留黄色波点，去掉了黑色阴影 */
             background-image: radial-gradient(var(--pop-yellow) 2.5px, transparent 2.5px);
             background-size: 30px 30px;
             display: flex;
@@ -56,9 +57,15 @@
             padding: 30px 50px 40px 50px;
             box-shadow: 12px 12px 0 var(--pop-black);
             width: 720px; 
+            
+            /* ⭐ 关键修改：定死高度，防止内容变化导致抖动 ⭐ */
+            height: 620px; 
             display: flex;
             flex-direction: column;
             align-items: center;
+            /* 让内部元素垂直均匀分布 */
+            justify-content: space-between; 
+            
             z-index: 10; 
         }
 
@@ -67,25 +74,21 @@
             font-size: 1.8rem; 
             font-weight: 700;
             color: var(--pop-black);
-            margin: 0 0 25px 0;
+            margin: 0; /* margin 交给 justify-content 控制 */
             text-transform: uppercase;
             letter-spacing: 4px;
             font-family: 'Courier New', Courier, monospace;
         }
 
-        /* 
-           ===== 修改重点：轮盘视窗 ===== 
-           1. width 改为 88% (原100%) -> 让框往里收缩
-           2. 增加 margin-bottom 微调间距
-        */
+        /* 轮盘视窗 */
         .slots-window {
-            width: 88%; /* 关键修改：收缩宽度 */
+            width: 88%; /* 宽度收缩 */
             display: flex;
             justify-content: space-between;
             gap: 15px;
             background: var(--pop-black);
             padding: 25px;
-            border-radius: 16px; /* 稍微加大圆角 */
+            border-radius: 16px;
             box-sizing: border-box;
             position: relative;
         }
@@ -97,7 +100,7 @@
             width: 32%;
         }
 
-        /* 标签 */
+        /* 标签：深灰底 + 橙字 */
         .reel-label {
             color: var(--pop-orange);
             background: #333333;
@@ -119,7 +122,17 @@
             border-radius: 8px;
             position: relative;
             overflow: hidden;
-            box-shadow: inset 0 10px 15px -5px rgba(0,0,0,0.3), inset 0 -10px 15px -5px rgba(0,0,0,0.3);
+        }
+
+        /* 内阴影遮罩：永远压在图片上面 */
+        .reel-col::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            box-shadow: inset 0 15px 20px -5px rgba(0,0,0,0.3), inset 0 -15px 20px -5px rgba(0,0,0,0.3);
+            pointer-events: none; 
+            z-index: 10; 
+            border-radius: 8px;
         }
 
         .reel-strip {
@@ -136,7 +149,6 @@
             align-items: center;
             font-size: 5rem; 
             line-height: 1;
-            /* 防止图片加载失败时文字撑爆布局 */
             overflow: hidden; 
         }
         
@@ -148,24 +160,21 @@
 
         .blur-motion { filter: blur(5px); }
 
-        /* 
-           ===== 修改重点：结果显示区 =====
-           为了配合上方收缩，这里也同步设置为 88%
-        */
+        /* 结果显示区 (双行模式) */
         #output-display {
             background: var(--pop-white);
             border: var(--border-thin);
-            width: 88%; /* 同步收缩 */
-            min-height: 70px;
+            width: 88%;
+            min-height: 90px;
             border-radius: 8px;
             display: flex;
+            flex-direction: column; 
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 12px 20px;
-            margin-top: 25px;
+            padding: 15px 20px;
             font-size: 1rem;
-            line-height: 1.4;
+            line-height: 1.6;
             color: #333;
             box-sizing: border-box;
             font-family: 'Courier New', Courier, monospace;
@@ -185,7 +194,6 @@
             font-family: 'Courier New', Courier, monospace;
             font-weight: 900;
             box-shadow: 6px 6px 0 var(--pop-black);
-            margin-top: 30px;
             transition: all 0.1s;
             letter-spacing: 1px;
         }
@@ -201,14 +209,14 @@
             transform: translate(3px, 3px);
         }
 
-        /* --- 把手组件 --- */
+        /* --- 把手组件 (图层置顶) --- */
         .handle-assembly {
             position: relative;
             width: 60px;
             height: 220px;
             margin-left: -10px; 
             margin-bottom: 60px;
-            z-index: 20; 
+            z-index: 20; /* 确保在最上层 */
             perspective: 800px;
         }
 
@@ -306,7 +314,7 @@
         }
 
         @media (max-width: 800px) {
-            .machine-container { width: 90vw; padding: 20px; }
+            .machine-container { width: 90vw; padding: 20px; height: auto; min-height: 600px; }
             .col-wrapper { width: 30%; }
             .slot-item { font-size: 3rem; }
             .handle-assembly { display: none; }
@@ -339,7 +347,11 @@
                 </div>
             </div>
 
-            <div id="output-display">System Ready. Drag lever to generate...</div>
+            <!-- 结果显示区 (双行) -->
+            <div id="output-display">
+                <div>System Ready.</div>
+                <div>Drag lever to generate...</div>
+            </div>
             <button id="spin-btn">GENERATE</button>
         </div>
 
@@ -356,13 +368,9 @@
         // ==========================================
         // DATASETS 配置区
         // ==========================================
-     // ==========================================
-        // DATASETS 配置区
-        // ==========================================
         const DATASETS = {
-            // 左轮：具身经验 (已替换为您提供的 35 张 Figma 图片)
+            // 左轮：具身经验 (35张图片)
             embodied: [
-                // --- Row 1 ---
                 { type: 'img', value: 'assets/crop_row_1_col_1.png', label: 'Red Geometry' },
                 { type: 'img', value: 'assets/crop_row_1_col_2.png', label: 'Chair Symbiosis' },
                 { type: 'img', value: 'assets/crop_row_1_col_3.png', label: 'Orange Fuzz' },
@@ -370,8 +378,6 @@
                 { type: 'img', value: 'assets/crop_row_1_col_5.png', label: 'Winged Hybrid' },
                 { type: 'img', value: 'assets/crop_row_1_col_6.png', label: 'Elongated Limbs' },
                 { type: 'img', value: 'assets/crop_row_1_col_7.png', label: 'Green Sphere' },
-
-                // --- Row 2 ---
                 { type: 'img', value: 'assets/crop_row_2_col_1.png', label: 'Contorted Beige' },
                 { type: 'img', value: 'assets/crop_row_2_col_2.png', label: 'Chair Anatomy' },
                 { type: 'img', value: 'assets/crop_row_2_col_3.png', label: 'Red Mass' },
@@ -379,8 +385,6 @@
                 { type: 'img', value: 'assets/crop_row_2_col_5.png', label: 'Screen Head' },
                 { type: 'img', value: 'assets/crop_row_2_col_6.png', label: 'Woven Cone' },
                 { type: 'img', value: 'assets/crop_row_2_col_7.png', label: 'Box Structure' },
-
-                // --- Row 3 ---
                 { type: 'img', value: 'assets/crop_row_3_col_1.png', label: 'Angel Wings' },
                 { type: 'img', value: 'assets/crop_row_3_col_2.png', label: 'Hairy Standing' },
                 { type: 'img', value: 'assets/crop_row_3_col_3.png', label: 'Pink Cage' },
@@ -388,8 +392,6 @@
                 { type: 'img', value: 'assets/crop_row_3_col_5.png', label: 'Cone Dress' },
                 { type: 'img', value: 'assets/crop_row_3_col_6.png', label: 'Fur Cylinder' },
                 { type: 'img', value: 'assets/crop_row_3_col_7.png', label: 'Long Sleeves' },
-
-                // --- Row 4 ---
                 { type: 'img', value: 'assets/crop_row_4_col_1.png', label: 'Snail Shell' },
                 { type: 'img', value: 'assets/crop_row_4_col_2.png', label: 'Beige Lump' },
                 { type: 'img', value: 'assets/crop_row_4_col_3.png', label: 'White Inflatable' },
@@ -397,8 +399,6 @@
                 { type: 'img', value: 'assets/crop_row_4_col_5.png', label: 'Backpack Burden' },
                 { type: 'img', value: 'assets/crop_row_4_col_6.png', label: 'Block Stack' },
                 { type: 'img', value: 'assets/crop_row_4_col_7.png', label: 'Orange Tube Arm' },
-
-                // --- Row 5 ---
                 { type: 'img', value: 'assets/crop_row_5_col_1.png', label: 'White Blob Sit' },
                 { type: 'img', value: 'assets/crop_row_5_col_2.png', label: 'Hand Head' },
                 { type: 'img', value: 'assets/crop_row_5_col_3.png', label: 'Circle Prop' },
@@ -407,65 +407,65 @@
                 { type: 'img', value: 'assets/crop_row_5_col_6.png', label: 'Blue Bend' },
                 { type: 'img', value: 'assets/crop_row_5_col_7.png', label: 'Balance Object' },
             ],
-            
-            // 中轮：感官知觉 (已替换为您提供的 Layer 1 - 14 图片)
+
+            // 中轮：感官知觉 (14张图片)
             sensory: [
-                { type: 'img', value: 'assets/Layer 1.png', label: 'Mosaic Vision' },      // 马赛克
-                { type: 'img', value: 'assets/Layer 2.png', label: 'Thermal Vision' },      // 热成像眼
-                { type: 'img', value: 'assets/Layer 3.png', label: 'Grayscale Vision' },          // 机械眼
-                { type: 'img', value: 'assets/Layer 4.png', label: 'Optical Sensor' },            // 人眼
-                { type: 'img', value: 'assets/Layer 5.png', label: 'Olfactory Scan' },      // 鼻子
-                { type: 'img', value: 'assets/Layer 6.png', label: 'Audio Capture' },       // 耳朵
-                { type: 'img', value: 'assets/Layer 7.png', label: 'Hearing Enhancement' },      // 机械耳
-                { type: 'img', value: 'assets/Layer 8.png', label: 'Oral Sensing' },         // 嘴唇
-                { type: 'img', value: 'assets/Layer 9.png', label: 'Bite Feedback' },   // 牙齿
-                { type: 'img', value: 'assets/Layer 10.png', label: 'Tactile Feedback' },   // 手掌
-                { type: 'img', value: 'assets/Layer 11.png', label: 'Motion Tracking' },    // 腿
-                { type: 'img', value: 'assets/Layer 12.png', label: 'Kinetic Leg' },    // 机械腿
-                { type: 'img', value: 'assets/Layer 13.png', label: 'Grounding Data' },     // 脚
-                { type: 'img', value: 'assets/Layer 14.png', label: 'Taste Sensor' },     // 舌头
+                { type: 'img', value: 'assets/Layer 1.png', label: 'Optical Sensor' },      
+                { type: 'img', value: 'assets/Layer 2.png', label: 'Thermal Vision' },      
+                { type: 'img', value: 'assets/Layer 3.png', label: 'Lens Focus' },          
+                { type: 'img', value: 'assets/Layer 4.png', label: 'Bio Gaze' },            
+                { type: 'img', value: 'assets/Layer 5.png', label: 'Olfactory Scan' },      
+                { type: 'img', value: 'assets/Layer 6.png', label: 'Audio Capture' },       
+                { type: 'img', value: 'assets/Layer 7.png', label: 'Sonic Receiver' },      
+                { type: 'img', value: 'assets/Layer 8.png', label: 'Voice Input' },         
+                { type: 'img', value: 'assets/Layer 9.png', label: 'Material Analysis' },   
+                { type: 'img', value: 'assets/Layer 10.png', label: 'Tactile Feedback' },   
+                { type: 'img', value: 'assets/Layer 11.png', label: 'Motion Tracking' },    
+                { type: 'img', value: 'assets/Layer 12.png', label: 'Hydraulic Joint' },    
+                { type: 'img', value: 'assets/Layer 13.png', label: 'Grounding Data' },     
+                { type: 'img', value: 'assets/Layer 14.png', label: 'Chemical Taste' },     
             ],
 
- // 右轮：意向性 (Intentionality) - 使用 Emoji + 您的创意文案
+            // 右轮：意向性
             intentionality: [
                 { type: 'icon', value: '🔑', label: 'Stop Lost Keys' },
                 { type: 'icon', value: '🪴', label: 'Boost Plant Happiness' },
-                { type: 'icon', value: '☁️', label: 'Sort Clouds by Vibe' },
-                { type: 'icon', value: '🐦', label: 'Train Pigeon Flight' },
-                { type: 'icon', value: '☕', label: 'Keep Coffee at 93%' },
-                { type: 'icon', value: '🛒', label: 'Block Impulse Buy' },
-                { type: 'icon', value: '🛋️', label: 'Optimize WiFi FengShui' },
+                { type: 'icon', value: '☁️', label: 'Sort all Clouds by Aesthetic Vibes' },
+                { type: 'icon', value: '🐦', label: 'Train Geometric Pigeon Flight' },
+                { type: 'icon', value: '☕', label: 'Keep Coffee Cups Exactly 93% Full' },
+                { type: 'icon', value: '🛒', label: 'Prevent Impulsive Online Purchases' },
+                { type: 'icon', value: '🛋️', label: 'Rearrange Furniture for Max WiFi' },
                 { type: 'icon', value: '😼', label: 'Prevent Cat Mug Crimes' },
-                { type: 'icon', value: '🐕', label: 'Translate Dog Barks' },
+                { type: 'icon', value: '🐕', label: 'Translate Dog Barks to PowerPoints' },
                 { type: 'icon', value: '🥑', label: 'Avocado Readiness Scan' },
-                { type: 'icon', value: '🧋', label: 'Predict Existential Boba' },
-                { type: 'icon', value: '🎭', label: 'Calibrate Group-Chat' },
-                { type: 'icon', value: '🎵', label: 'Elevator Music DJ' },
-                { type: 'icon', value: '🔥', label: 'Rate Memes: DANK' },
-                { type: 'icon', value: '🌵', label: 'Cactus Socializing' },
-                { type: 'icon', value: '🤳', label: 'Aesthetic Moon Selfie' },
-                { type: 'icon', value: '🌀', label: 'Find Pattern in Chaos' },
-                { type: 'icon', value: '📖', label: 'Perception to Story' },
-                { type: 'icon', value: '🧘', label: 'Stabilize Overload' },
-                { type: 'icon', value: '🧩', label: 'View World in Fragments' },
-                { type: 'icon', value: '🔮', label: 'Predict Next Sensation' },
-                { type: 'icon', value: '😵‍💫', label: 'Resolve Sense Conflict' },
-                { type: 'icon', value: '💭', label: 'Imagine Missing Data' },
-                { type: 'icon', value: '⚡', label: 'Perception to Action' },
-                { type: 'icon', value: '🏗️', label: 'Rebuild Reality' },
-                { type: 'icon', value: '🕵️', label: 'Decode Subtle Cues' },
-                { type: 'icon', value: '🦁', label: 'Confident Confusion' },
-                { type: 'icon', value: '🧦', label: 'Sock Symmetry Check' },
-                { type: 'icon', value: '🍕', label: 'Pizza Ratio Analysis' },
-                { type: 'icon', value: '🤧', label: 'Sync Public Sneezes' },
-                { type: 'icon', value: '🧊', label: 'Stop Fridge Philosophy' },
-                { type: 'icon', value: '🐠', label: 'Goldfish Commitment' },
-                { type: 'icon', value: '👁️', label: 'Sense Hidden Truth' },
-                { type: 'icon', value: '🎞️', label: 'Trace Memory Origin' },
-                { type: 'icon', value: '🍎', label: 'Gravity into Choice' },
+                { type: 'icon', value: '🧋', label: 'Predict the Most Existential Boba' },
+                { type: 'icon', value: '🎭', label: 'Calibrate Group-Chat Drama' },
+                { type: 'icon', value: '🎵', label: 'Perfect Elevator Background Music' },
+                { type: 'icon', value: '🔥', label: 'Decide Which Memes are “DANK”' },
+                { type: 'icon', value: '🌵', label: 'Help a Cactus form Friendships' },
+                { type: 'icon', value: '🤳', label: 'Aesthetic Moon Selfies' },
+                { type: 'icon', value: '🌀', label: 'Find Pattern from Chaos' },
+                { type: 'icon', value: '📖', label: 'Translate Perception to Story' },
+                { type: 'icon', value: '🧘', label: 'Stay Stable under Sensory Overload' },
+                { type: 'icon', value: '🧩', label: 'Perceive World through Fragments' },
+                { type: 'icon', value: '🔮', label: 'Predict Next Incoming Sensation' },
+                { type: 'icon', value: '😵‍💫', label: 'Adapt When Senses Conflict' },
+                { type: 'icon', value: '💭', label: 'Imagine Missing Perception' },
+                { type: 'icon', value: '⚡', label: 'Convert Perception to Action' },
+                { type: 'icon', value: '🏗️', label: 'Rebuild Reality from Fragments' },
+                { type: 'icon', value: '🕵️', label: 'Decode Behavior from Subtle Cues' },
+                { type: 'icon', value: '🦁', label: 'Act Confidently in Confusion' },
+                { type: 'icon', value: '🧦', label: 'Maintain Perfect Sock Symmetry' },
+                { type: 'icon', value: '🍕', label: 'Predict Ideal Pizza Topping Ratios' },
+                { type: 'icon', value: '🤧', label: 'Synchronize All Public Sneezes' },
+                { type: 'icon', value: '🧊', label: 'Prevent Midnight Fridge Philosophy' },
+                { type: 'icon', value: '🐠', label: 'Teach Goldfish Long-Term Commitment' },
+                { type: 'icon', value: '👁️', label: 'Sense Truth Hidden Between Signals' },
+                { type: 'icon', value: '🎞️', label: 'Trace Memory Back to Origin' },
+                { type: 'icon', value: '🍎', label: 'Translate Gravity into Choice' },
             ]
         };
-        
+
         const SLOT_HEIGHT = 140;
 
         const REELS = [
@@ -545,7 +545,7 @@
             isSpinning = true;
             spinBtn.disabled = true;
             spinBtn.innerText = "PROCESSING...";
-            outputDisplay.innerHTML = "Processing reality input...";
+            outputDisplay.innerHTML = "<div>Reading inputs...</div><div>&nbsp;</div>";
 
             if (!isDragging) { 
                 leverStick.classList.add('pole-pulled-animation');
@@ -583,10 +583,10 @@
             isSpinning = false;
             spinBtn.disabled = false;
             spinBtn.innerText = "GENERATE";
+            // 双行文本
             const text = `
-                AI detects <span class="highlight">${results[0].label}</span> 
-                via <span class="highlight">${results[1].label}</span>, 
-                initiating <span class="highlight">${results[2].label}</span>.
+                <div>AI detects <span class="highlight">${results[0].label}</span> via <span class="highlight">${results[1].label}</span>,</div>
+                <div>initiating <span class="highlight">${results[2].label}</span>.</div>
             `;
             outputDisplay.innerHTML = text;
         }
