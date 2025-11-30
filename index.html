@@ -7,11 +7,8 @@
     <style>
         /* --- 配色与变量 --- */
         :root {
-            /* 🟡 鲜艳柠檬黄 */
             --pop-yellow: #FFEE00; 
-            /* 🟠 活力亮橙色 */
             --pop-orange: #FF6A3B; 
-            
             --pop-black: #121212;
             --pop-white: #ffffff;
             --pop-bg: #ffffff; 
@@ -25,28 +22,44 @@
 
         body {
             background-color: var(--pop-bg);
-            /* 背景：仅保留黄色波点 */
+            /* 背景：黄色波点 */
             background-image: radial-gradient(var(--pop-yellow) 2.5px, transparent 2.5px);
             background-size: 30px 30px;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            width: 100vw;
             margin: 0;
+            padding: 0;
             font-family: 'Courier New', Courier, monospace;
-            overflow: hidden;
+            overflow: hidden; /* 禁止滚动条，防止缩放时抖动 */
             perspective: 1200px;
             user-select: none; 
             -webkit-user-select: none;
         }
 
-        /* 布局容器 */
+        /* 
+           ===== 布局容器 (缩放核心) ===== 
+           不再写固定的 transform，而是由 JS 动态计算
+        */
         .layout-wrapper {
             display: flex;
             align-items: flex-end;
             position: relative;
+            /* 设定中心点为屏幕中心，方便缩放 */
             transform-origin: center center;
-            margin-left: 20px; 
+            /* 初始稍作缩小防止闪烁，JS加载后会覆盖 */
+            transform: scale(1);
+            
+            /* 给整个容器设定一个固定的“设计尺寸” */
+            /* 包含机器宽度(720) + 把手突出部分(~80) */
+            width: 820px; 
+            /* 包含机器高度 + 阴影等 */
+            height: 750px; 
+            
+            /* 保证内容居中 */
+            justify-content: center;
         }
 
         /* --- 机器主体 --- */
@@ -55,19 +68,15 @@
             background-color: var(--pop-yellow);
             border: var(--border-thick);
             border-radius: var(--radius-box);
-            /* 调整内边距，让上下稍微紧凑一点，左右宽敞 */
-            padding: 40px 50px; 
+            padding: 30px 50px 40px 50px;
             box-shadow: 12px 12px 0 var(--pop-black);
             width: 720px; 
-            
-            /* ⭐ 关键调整：恢复成较扁的比例 (580px) ⭐ */
-            height: 580px; 
-            
+            /* 移除 Flex 布局，改用 absolute 撑满 wrapper 的左侧，或者保持流式 */
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between; 
             z-index: 10; 
+            box-sizing: border-box; /* 确保 padding 不撑大 width */
         }
 
         /* 标题 */
@@ -75,7 +84,7 @@
             font-size: 1.8rem; 
             font-weight: 700;
             color: var(--pop-black);
-            margin: 0;
+            margin: 0 0 25px 0;
             text-transform: uppercase;
             letter-spacing: 4px;
             font-family: 'Courier New', Courier, monospace;
@@ -125,7 +134,7 @@
             overflow: hidden;
         }
 
-        /* 内阴影遮罩 */
+        /* 内阴影遮罩 (在图片之上) */
         .reel-col::after {
             content: "";
             position: absolute;
@@ -161,7 +170,7 @@
 
         .blur-motion { filter: blur(5px); }
 
-        /* 结果显示区 (双行模式) */
+        /* 结果显示区 */
         #output-display {
             background: var(--pop-white);
             border: var(--border-thin);
@@ -173,7 +182,8 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 10px 20px; /* 稍微减小内边距以适应高度 */
+            padding: 15px 20px;
+            margin-top: 25px;
             font-size: 1rem;
             line-height: 1.6;
             color: #333;
@@ -195,6 +205,7 @@
             font-family: 'Courier New', Courier, monospace;
             font-weight: 900;
             box-shadow: 6px 6px 0 var(--pop-black);
+            margin-top: 30px;
             transition: all 0.1s;
             letter-spacing: 1px;
         }
@@ -212,11 +223,11 @@
 
         /* --- 把手组件 --- */
         .handle-assembly {
-            position: relative;
+            position: absolute; /* 改为绝对定位，相对于 layout-wrapper */
+            right: 0; /* 靠右 */
+            bottom: 120px; /* 调整垂直位置，根据 machine 高度 */
             width: 60px;
             height: 220px;
-            margin-left: -10px; 
-            margin-bottom: 60px;
             z-index: 20; 
             perspective: 800px;
         }
@@ -318,7 +329,7 @@
 </head>
 <body>
 
-    <div class="layout-wrapper">
+    <div class="layout-wrapper" id="scale-wrapper">
         <div class="machine-container">
             <h1 class="main-title">A DAY AS AI</h1>
             
@@ -359,7 +370,35 @@
 
     <script>
         // ==========================================
-        // DATASETS 配置区
+        // AUTO SCALING LOGIC (自适应逻辑)
+        // ==========================================
+        function autoResize() {
+            const wrapper = document.getElementById('scale-wrapper');
+            // 设定我们的设计基准尺寸：宽850px (机器+把手), 高820px
+            const baseWidth = 850; 
+            const baseHeight = 820; 
+            
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+
+            // 计算缩放比例：取宽比和高比中较小的那个，保留 5% 的边距 (0.95)
+            const scale = Math.min(
+                (windowWidth / baseWidth) * 0.95, 
+                (windowHeight / baseHeight) * 0.95
+            );
+
+            // 应用缩放
+            wrapper.style.transform = `scale(${scale})`;
+        }
+
+        // 监听窗口调整事件
+        window.addEventListener('resize', autoResize);
+        // 初始化调用一次
+        window.addEventListener('load', autoResize);
+
+
+        // ==========================================
+        // DATASETS 配置区 (完整数据)
         // ==========================================
         const DATASETS = {
             embodied: [
@@ -488,30 +527,6 @@
         const outputDisplay = document.getElementById('output-display');
         let isSpinning = false;
 
-        // --- Window Resize Logic (自适应缩放) ---
-        function resizeGame() {
-            const wrapper = document.querySelector('.layout-wrapper');
-            const windowWidth = window.innerWidth;
-            const windowHeight = window.innerHeight;
-
-            const baseWidth = 900; 
-            const baseHeight = 750;
-
-            const scale = Math.min(
-                windowWidth / baseWidth,
-                windowHeight / baseHeight
-            ) * 0.9;
-
-            const finalScale = Math.min(scale, 1.2);
-
-            wrapper.style.transform = `scale(${finalScale})`;
-        }
-
-        window.addEventListener('resize', resizeGame);
-        window.addEventListener('load', resizeGame);
-        resizeGame();
-
-
         // --- Drag Logic ---
         let isDragging = false;
         let startY = 0;
@@ -597,7 +612,6 @@
             isSpinning = false;
             spinBtn.disabled = false;
             spinBtn.innerText = "GENERATE";
-            // 双行文本
             const text = `
                 <div>AI detects <span class="highlight">${results[0].label}</span> via <span class="highlight">${results[1].label}</span>,</div>
                 <div>initiating <span class="highlight">${results[2].label}</span>.</div>
