@@ -22,6 +22,7 @@
 
         body {
             background-color: var(--pop-bg);
+            /* 背景：黄色波点 */
             background-image: radial-gradient(var(--pop-yellow) 2.5px, transparent 2.5px);
             background-size: 30px 30px;
             display: flex;
@@ -63,8 +64,6 @@
             align-items: center;
             z-index: 10; 
             box-sizing: border-box;
-            
-            /* 保持之前的右边距，平衡视觉 */
             margin-right: 80px; 
         }
 
@@ -79,12 +78,12 @@
         }
 
         .slots-window {
-            width: 90%; 
+            width: 88%; 
             display: flex;
             justify-content: space-between;
-            gap: 20px; 
+            gap: 15px; 
             background: var(--pop-black);
-            padding: 30px;
+            padding: 25px;
             border-radius: 16px;
             box-sizing: border-box;
             position: relative;
@@ -100,12 +99,12 @@
         .reel-label {
             color: var(--pop-orange);
             background: #333333;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             text-transform: uppercase; 
             letter-spacing: 1px;
-            padding: 6px 12px;
+            padding: 5px 10px;
             border-radius: 4px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-weight: 900;
             border: 1px solid #444;
         }
@@ -157,22 +156,22 @@
         #output-display {
             background: var(--pop-white);
             border: var(--border-thin);
-            width: 90%; 
-            height: 110px; 
+            width: 88%;
+            min-height: 90px;
             border-radius: 8px;
             display: flex;
             flex-direction: column; 
-            justify-content: center; 
-            align-items: center;     
+            justify-content: center;
+            align-items: center;
             text-align: center;
-            padding: 0 20px; 
-            margin-top: 30px;
-            font-size: 1.1rem;
-            line-height: 1.5;
+            padding: 15px 20px;
+            margin-top: 25px;
+            font-size: 1rem;
+            line-height: 1.6;
             color: #333;
             box-sizing: border-box;
             font-family: 'Courier New', Courier, monospace;
-            text-transform: uppercase; 
+            text-transform: uppercase;
         }
         
         .highlight { color: var(--pop-orange); font-weight: bold; }
@@ -188,9 +187,9 @@
             font-family: 'Courier New', Courier, monospace;
             font-weight: 900;
             box-shadow: 6px 6px 0 var(--pop-black);
-            margin-top: 35px;
+            margin-top: 30px;
             transition: all 0.1s;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             text-transform: uppercase; 
         }
 
@@ -206,89 +205,100 @@
         }
 
         /* 
-           ===== 把手组件 ===== 
-           关键修改：z-index 提升到 20，确保在机器(z-index:10)之上
+           ===== 把手组件 (像素级还原参考图) ===== 
         */
         .handle-assembly {
             position: absolute; 
-            right: 0px; 
-            bottom: 100px; 
+            /* 向右偏移，挂在机器外面 */
+            right: -30px; 
+            /* 垂直位置：对齐文字框附近 */
+            bottom: 150px; 
+            
             width: 100px; 
-            height: 320px; 
-            /* 🔴 修改点：层级改为 20 */
-            z-index: 20; 
+            height: 350px; 
+            z-index: 20; /* 确保在最上层 */
             perspective: 800px;
         }
 
+        /* 底座：参考图中的灰色圆角矩形 */
         .handle-base {
-            width: 60px; 
-            height: 120px; 
-            background: #999;
-            border: var(--border-thick);
-            border-left: none; 
-            border-radius: 0 16px 16px 0;
+            width: 50px; 
+            height: 90px; 
+            background: #999; /* 灰色 */
+            border: 4px solid var(--pop-black); /* 黑色粗边框 */
+            border-radius: 12px; /* 圆角 */
             position: absolute;
-            bottom: 40px;
-            left: 0; 
-            box-shadow: inset -5px -5px 10px rgba(0,0,0,0.2); 
+            bottom: 0;
+            left: 10px; /* 稍微居中 */
+            /* 右下角的黑色硬阴影 */
+            box-shadow: 6px 6px 0 var(--pop-black); 
             z-index: 1;
         }
 
+        /* 摇杆组 */
         .handle-stick-group {
             position: absolute;
-            bottom: 80px; 
-            left: 20px;   
-            width: 30px;
+            bottom: 60px; /* 旋转轴心在底座内部 */
+            left: 25px;   /* 居中 */
+            width: 20px;
             height: 300px; 
             cursor: grab;
             z-index: 2;
             transform-origin: bottom center;
             transform-style: preserve-3d;
-            transform: rotateX(10deg);
+            transform: rotateX(0deg); /* 默认直立 */
         }
         
         .handle-stick-group:active { cursor: grabbing; }
 
+        /* 杆子：参考图中的银白色细长杆 */
         .handle-pole {
-            width: 20px; 
-            height: 260px; 
-            background: linear-gradient(90deg, #ccc, #eee, #bbb);
+            width: 16px; 
+            height: 210px; 
+            background: linear-gradient(90deg, #ddd, #fff, #bbb);
             border: 3px solid #111;
             border-radius: 10px;
             position: absolute;
             bottom: 0;
-            left: 5px; 
+            left: 2px; 
         }
 
+        /* 球头：参考图中的橙色大球 */
         .handle-knob {
-            width: 100px; 
-            height: 100px;
+            width: 90px; 
+            height: 90px;
             background: var(--pop-orange);
             border: 4px solid var(--pop-black);
             border-radius: 50%;
             position: absolute;
-            top: -50px;
-            left: -35px; 
-            box-shadow: -4px 4px 0 rgba(0,0,0,0.2);
+            top: -5px;
+            left: -35px; /* 居中校准 */
+            
+            /* 球体下方的阴影 */
+            box-shadow: -3px 3px 0 rgba(0,0,0,0.2);
+            
             transform-origin: center center;
-            transform: rotateX(-10deg) translateZ(20px); 
+            transform: rotateX(0deg) translateZ(20px); 
         }
 
+        /* ⚪️ 高光点 1：左上角的大椭圆 */
         .handle-knob::after {
             content: "";
             position: absolute;
             top: 20px;
-            left: 22px;
-            width: 22px;
-            height: 22px;
+            left: 20px;
+            width: 25px;
+            height: 15px;
             background: white;
             border-radius: 50%;
+            transform: rotate(-45deg); /* 旋转一点角度更自然 */
         }
 
+        /* ⚪️ 高光点 2：下方的小圆点 */
         .handle-knob::before {
             content: "";
             position: absolute;
-            top: 50px;
+            top: 45px;
             left: 15px;
             width: 10px;
             height: 10px;
@@ -301,16 +311,16 @@
 
         .pole-pulled-animation { animation: poleAction 0.6s ease-in-out; }
         @keyframes poleAction {
-            0% { transform: rotateX(10deg); }
-            50% { transform: rotateX(-60deg); } 
-            100% { transform: rotateX(10deg); }
+            0% { transform: rotateX(0deg); }
+            50% { transform: rotateX(-50deg); } 
+            100% { transform: rotateX(0deg); }
         }
 
         .knob-pulled-animation { animation: knobAction 0.6s ease-in-out; }
         @keyframes knobAction {
-            0% { transform: rotateX(-10deg) translateZ(20px); }
-            50% { transform: rotateX(60deg) translateZ(20px); } 
-            100% { transform: rotateX(-10deg) translateZ(20px); }
+            0% { transform: rotateX(0deg) translateZ(20px); }
+            50% { transform: rotateX(50deg) translateZ(20px); } 
+            100% { transform: rotateX(0deg) translateZ(20px); }
         }
 
     </style>
@@ -357,7 +367,7 @@
 
     <script>
         // ==========================================
-        // AUTO SCALING LOGIC (自适应逻辑)
+        // AUTO SCALING LOGIC
         // ==========================================
         function autoResize() {
             const wrapper = document.getElementById('scale-wrapper');
@@ -515,8 +525,8 @@
         // --- Drag Logic ---
         let isDragging = false;
         let startY = 0;
-        const START_ANGLE = 10;
-        const MAX_PULL_ANGLE = -60;
+        const START_ANGLE = 0; // 改回0度直立
+        const MAX_PULL_ANGLE = -50; 
         const MAX_DRAG_PIXELS = 250; 
         
         leverStick.addEventListener('mousedown', (e) => {
