@@ -47,7 +47,7 @@
             width: 1100px; 
             height: 750px; 
             transform-origin: center center;
-            top: -50px; 
+            top: -100px; 
         }
 
         /* --- 机器主体 --- */
@@ -339,6 +339,9 @@
    /* 
            ===== 🖨️ 打印专用样式 (ID对齐 + 瘦长三角版) ===== 
         */
+  /* 
+           ===== 🖨️ 打印专用样式 (修正版：大字体 + 圆形遮罩) ===== 
+        */
         #print-area { display: none; }
 
         @media print {
@@ -376,7 +379,7 @@
                 z-index: 9999;
             }
 
-            /* --- Header 调整 --- */
+            /* --- Header --- */
             .card-header {
                 width: 100%;
                 display: flex;
@@ -384,11 +387,10 @@
                 margin-bottom: 3mm;
             }
 
-            /* 小标题行：左右两端对齐 */
             .card-year-row {
                 width: 100%;
                 display: flex;
-                justify-content: space-between; /* 左边文字，右边ID */
+                justify-content: space-between; 
                 align-items: center;
                 margin-bottom: 1mm;
             }
@@ -401,18 +403,18 @@
                 text-transform: uppercase;
             }
 
-            /* 大标题 */
+            /* 🔴 修改点1：字体变大 */
             .card-role-name {
-                font-size: 20pt;
+                font-size: 32pt; /* 从 20pt 加大到 32pt */
                 font-weight: 900;
                 text-transform: uppercase;
                 color: #121212;
                 letter-spacing: -1px;
                 line-height: 1;
-                text-align: left; /* 确保靠左 */
+                text-align: left; 
             }
 
-            /* 中间视觉区 */
+            /* --- 视觉区 --- */
             .card-visual-box {
                 width: 100%;
                 height: 75mm;
@@ -429,7 +431,9 @@
 
             #p-img-main { width: 85%; height: 85%; object-fit: contain; }
 
-            /* 徽章 */
+            /* 
+               🔴 修改点2：图片放在边框下面 (overflow: hidden) 
+            */
             .card-badge {
                 position: absolute;
                 bottom: 3mm; right: 3mm;
@@ -442,6 +446,9 @@
                 align-items: center;
                 box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
                 z-index: 5;
+                
+                /* 关键代码：剪裁超出圆形的图片内容 */
+                overflow: hidden; 
             }
             #p-img-sense { width: 75%; height: 75%; object-fit: contain; }
 
@@ -463,29 +470,16 @@
                 margin-bottom: 10mm;
             }
 
-            /* 
-               🔴 修改点：瘦长三角形 
-            */
             .card-task-bubble::after {
                 content: "";
                 position: absolute;
-                top: -10mm; /* 向上延伸更多 */
-                
-                /* 对齐 Sensory 中心 */
-                /* Badge center is approx 3mm(margin) + 11mm(half width) = 14mm from right */
+                top: -10mm; 
                 right: 11mm; 
-                
                 width: 0; 
                 height: 0; 
-                
-                /* 瘦：左右边距减小 (3mm) */
                 border-left: 3mm solid transparent;
                 border-right: 3mm solid transparent;
-                
-                /* 长：底部高度增加 (12mm)，颜色为黑色 */
                 border-bottom: 12mm solid #121212; 
-                
-                /* 不需要旋转了，直接用border画三角形 */
                 transform: none; 
             }
 
@@ -846,9 +840,25 @@ function finishSpin(results) {
             document.getElementById('p-img-sense').src = results[1].value;
             document.getElementById('p-task').innerText = results[2].label;
             
-            // 生成随机 ID (6位数)
-            const randomID = Math.floor(Math.random() * 900000) + 100000;
-            document.getElementById('p-id').innerText = `ID: ${randomID}`;
+            // ==========================================
+            // 🆕 新 ID 生成逻辑：基于内容的唯一 ID
+            // ==========================================
+            // 1. 找到当前结果在原始列表中的序号 (Index)
+            // findIndex 会返回 0, 1, 2... 等数字
+            const idx1 = DATASETS.embodied.findIndex(item => item.label === results[0].label);
+            const idx2 = DATASETS.sensory.findIndex(item => item.label === results[1].label);
+            const idx3 = DATASETS.intentionality.findIndex(item => item.label === results[2].label);
+
+            // 2. 将序号格式化为两位数 (例如 5 -> "06", 12 -> "13")
+            // 这里 +1 是为了让 ID 从 01 开始而不是 00，看起来更像人类的编号习惯
+            const num1 = String(idx1 + 1).padStart(2, '0');
+            const num2 = String(idx2 + 1).padStart(2, '0');
+            const num3 = String(idx3 + 1).padStart(2, '0');
+
+            // 3. 组合成 6 位 ID
+            const uniqueID = `${num1}${num2}${num3}`;
+            
+            document.getElementById('p-id').innerText = `ID: ${uniqueID}`;
 
             // 生成时间戳
             const now = new Date();
