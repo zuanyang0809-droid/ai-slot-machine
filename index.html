@@ -7,8 +7,11 @@
     <style>
         /* --- 配色与变量 --- */
         :root {
+            /* 🟡 鲜艳柠檬黄 */
             --pop-yellow: #FFEE00; 
+            /* 🟠 活力亮橙色 */
             --pop-orange: #FF6A3B; 
+            
             --pop-black: #121212;
             --pop-white: #ffffff;
             --pop-bg: #ffffff; 
@@ -33,33 +36,27 @@
             margin: 0;
             padding: 0;
             font-family: 'Courier New', Courier, monospace;
-            overflow: hidden; /* 禁止滚动条，防止缩放时抖动 */
+            overflow: hidden; 
             perspective: 1200px;
             user-select: none; 
             -webkit-user-select: none;
         }
 
         /* 
-           ===== 布局容器 (缩放核心) ===== 
-           不再写固定的 transform，而是由 JS 动态计算
+           ===== 1. 布局容器 ===== 
+           保持 1120px 宽度，确保有足够空间容纳右侧手柄
         */
         .layout-wrapper {
+            position: relative;
             display: flex;
             align-items: flex-end;
-            position: relative;
-            /* 设定中心点为屏幕中心，方便缩放 */
-            transform-origin: center center;
-            /* 初始稍作缩小防止闪烁，JS加载后会覆盖 */
-            transform: scale(1);
+            justify-content: center; 
             
-            /* 给整个容器设定一个固定的“设计尺寸” */
-            /* 包含机器宽度(720) + 把手突出部分(~80) */
-            width: 820px; 
-            /* 包含机器高度 + 阴影等 */
+            /* 容器宽度 = 机器宽度(960) + 左右预留空间 */
+            width: 1120px; 
             height: 750px; 
             
-            /* 保证内容居中 */
-            justify-content: center;
+            transform-origin: center center;
         }
 
         /* --- 机器主体 --- */
@@ -68,25 +65,24 @@
             background-color: var(--pop-yellow);
             border: var(--border-thick);
             border-radius: var(--radius-box);
-            padding: 30px 50px 40px 50px;
-            box-shadow: 12px 12px 0 var(--pop-black);
-            width: 720px; 
-            /* 移除 Flex 布局，改用 absolute 撑满 wrapper 的左侧，或者保持流式 */
+            padding: 40px 60px; 
+            box-shadow: 15px 15px 0 var(--pop-black);
+            width: 960px; 
             display: flex;
             flex-direction: column;
             align-items: center;
             z-index: 10; 
-            box-sizing: border-box; /* 确保 padding 不撑大 width */
+            box-sizing: border-box;
         }
 
         /* 标题 */
         .main-title {
-            font-size: 1.8rem; 
+            font-size: 2rem; 
             font-weight: 700;
             color: var(--pop-black);
-            margin: 0 0 25px 0;
+            margin: 0 0 30px 0;
             text-transform: uppercase;
-            letter-spacing: 4px;
+            letter-spacing: 6px; 
             font-family: 'Courier New', Courier, monospace;
         }
 
@@ -95,9 +91,9 @@
             width: 88%; 
             display: flex;
             justify-content: space-between;
-            gap: 15px;
+            gap: 20px; 
             background: var(--pop-black);
-            padding: 25px;
+            padding: 30px;
             border-radius: 16px;
             box-sizing: border-box;
             position: relative;
@@ -114,12 +110,12 @@
         .reel-label {
             color: var(--pop-orange);
             background: #333333;
-            font-size: 0.7rem;
-            text-transform: uppercase;
+            font-size: 0.8rem;
+            text-transform: uppercase; 
             letter-spacing: 1px;
-            padding: 5px 10px;
+            padding: 6px 12px;
             border-radius: 4px;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             font-weight: 900;
             border: 1px solid #444;
         }
@@ -134,7 +130,7 @@
             overflow: hidden;
         }
 
-        /* 内阴影遮罩 (在图片之上) */
+        /* 内阴影遮罩 */
         .reel-col::after {
             content: "";
             position: absolute;
@@ -170,25 +166,31 @@
 
         .blur-motion { filter: blur(5px); }
 
-        /* 结果显示区 */
+        /* 
+           ===== 2. 结果显示区 (完美居中修复) =====
+        */
         #output-display {
             background: var(--pop-white);
             border: var(--border-thin);
-            width: 88%;
-            min-height: 90px;
+            width: 88%; 
+            height: 110px; 
             border-radius: 8px;
+            
+            /* Flex 居中三件套 */
             display: flex;
             flex-direction: column; 
-            justify-content: center;
-            align-items: center;
+            justify-content: center; /* 垂直居中 */
+            align-items: center;     /* 水平居中 */
+            
             text-align: center;
-            padding: 15px 20px;
-            margin-top: 25px;
-            font-size: 1rem;
-            line-height: 1.6;
+            padding: 0 20px; 
+            margin-top: 30px;
+            font-size: 1.1rem;
+            line-height: 1.5;
             color: #333;
             box-sizing: border-box;
             font-family: 'Courier New', Courier, monospace;
+            text-transform: uppercase; 
         }
         
         .highlight { color: var(--pop-orange); font-weight: bold; }
@@ -198,16 +200,17 @@
             background: var(--pop-orange);
             color: var(--pop-white);
             border: var(--border-thick);
-            font-size: 1.4rem;
-            padding: 12px 60px;
-            border-radius: 50px;
+            font-size: 1.6rem;
+            padding: 15px 80px;
+            border-radius: 60px;
             cursor: pointer;
             font-family: 'Courier New', Courier, monospace;
             font-weight: 900;
             box-shadow: 6px 6px 0 var(--pop-black);
-            margin-top: 30px;
+            margin-top: 35px;
             transition: all 0.1s;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            text-transform: uppercase; 
         }
 
         button#spin-btn:active {
@@ -221,11 +224,15 @@
             transform: translate(3px, 3px);
         }
 
-        /* --- 把手组件 --- */
+        /* 
+           ===== 3. 把手组件 (位置终极修正) ===== 
+           - right: 10px -> 紧贴黄色机身右侧
+           - bottom: 60px -> 大幅下移，底座对齐机器下部，不再飞在天上
+        */
         .handle-assembly {
-            position: absolute; /* 改为绝对定位，相对于 layout-wrapper */
-            right: 0; /* 靠右 */
-            bottom: 120px; /* 调整垂直位置，根据 machine 高度 */
+            position: absolute; 
+            right: 5px;   /* 靠里一点，贴住边框 */
+            bottom: 60px;  /* 下移到底部区域 */
             width: 60px;
             height: 220px;
             z-index: 20; 
@@ -370,37 +377,33 @@
 
     <script>
         // ==========================================
-        // AUTO SCALING LOGIC (自适应逻辑)
+        // AUTO SCALING LOGIC
         // ==========================================
         function autoResize() {
             const wrapper = document.getElementById('scale-wrapper');
-            // 设定我们的设计基准尺寸：宽850px (机器+把手), 高820px
-            const baseWidth = 850; 
-            const baseHeight = 820; 
+            const baseWidth = 1120; 
+            const baseHeight = 850; 
             
             const windowWidth = window.innerWidth;
             const windowHeight = window.innerHeight;
 
-            // 计算缩放比例：取宽比和高比中较小的那个，保留 5% 的边距 (0.95)
             const scale = Math.min(
                 (windowWidth / baseWidth) * 0.95, 
                 (windowHeight / baseHeight) * 0.95
             );
 
-            // 应用缩放
             wrapper.style.transform = `scale(${scale})`;
         }
 
-        // 监听窗口调整事件
         window.addEventListener('resize', autoResize);
-        // 初始化调用一次
         window.addEventListener('load', autoResize);
 
 
         // ==========================================
-        // DATASETS 配置区 (完整数据)
+        // DATASETS 配置区
         // ==========================================
         const DATASETS = {
+            // 左轮
             embodied: [
                 { type: 'img', value: 'assets/crop_row_1_col_1.png', label: 'Red Geometry' },
                 { type: 'img', value: 'assets/crop_row_1_col_2.png', label: 'Chair Symbiosis' },
@@ -439,6 +442,7 @@
                 { type: 'img', value: 'assets/crop_row_5_col_7.png', label: 'Balance Object' },
             ],
 
+            // 中轮
             sensory: [
                 { type: 'img', value: 'assets/Layer 1.png', label: 'Optical Sensor' },      
                 { type: 'img', value: 'assets/Layer 2.png', label: 'Thermal Vision' },      
@@ -456,6 +460,7 @@
                 { type: 'img', value: 'assets/Layer 14.png', label: 'Chemical Taste' },     
             ],
 
+            // 右轮
             intentionality: [
                 { type: 'icon', value: '🔑', label: 'Stop Lost Keys' },
                 { type: 'icon', value: '🪴', label: 'Boost Plant Happiness' },
@@ -562,7 +567,7 @@
             leverKnob.classList.add('knob-transition');
             const deltaY = e.clientY - startY;
             leverStick.style.transform = `rotateX(${START_ANGLE}deg)`;
-            leverKnob.style.transform = `rotateX(${-START_ANGLE}deg) translateZ(20px)`;
+            leverKnob.style.transform = `rotateX(${-START_ANGLE}deg) translateZ(10px)`;
             if(deltaY > 100) {
                 startSpin();
             }
@@ -613,8 +618,8 @@
             spinBtn.disabled = false;
             spinBtn.innerText = "GENERATE";
             const text = `
-                <div>AI detects <span class="highlight">${results[0].label}</span> via <span class="highlight">${results[1].label}</span>,</div>
-                <div>initiating <span class="highlight">${results[2].label}</span>.</div>
+                <div>AI DETECTS <span class="highlight">${results[0].label}</span> VIA <span class="highlight">${results[1].label}</span>,</div>
+                <div>INITIATING <span class="highlight">${results[2].label}</span>.</div>
             `;
             outputDisplay.innerHTML = text;
         }
