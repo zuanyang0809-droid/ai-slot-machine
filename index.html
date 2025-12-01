@@ -7,11 +7,8 @@
     <style>
         /* --- 配色与变量 --- */
         :root {
-            /* 🟡 鲜艳柠檬黄 */
             --pop-yellow: #FFEE00; 
-            /* 🟠 活力亮橙色 */
             --pop-orange: #FF6A3B; 
-            
             --pop-black: #121212;
             --pop-white: #ffffff;
             --pop-bg: #ffffff; 
@@ -25,7 +22,6 @@
 
         body {
             background-color: var(--pop-bg);
-            /* 背景：黄色波点 */
             background-image: radial-gradient(var(--pop-yellow) 2.5px, transparent 2.5px);
             background-size: 30px 30px;
             display: flex;
@@ -42,20 +38,14 @@
             -webkit-user-select: none;
         }
 
-        /* 
-           ===== 1. 布局容器 ===== 
-           保持 1120px 宽度，确保有足够空间容纳右侧手柄
-        */
+        /* 布局容器 */
         .layout-wrapper {
             position: relative;
             display: flex;
             align-items: flex-end;
             justify-content: center; 
-            
-            /* 容器宽度 = 机器宽度(960) + 左右预留空间 */
-            width: 1120px; 
+            width: 1100px; 
             height: 750px; 
-            
             transform-origin: center center;
         }
 
@@ -65,7 +55,7 @@
             background-color: var(--pop-yellow);
             border: var(--border-thick);
             border-radius: var(--radius-box);
-            padding: 40px 60px; 
+            padding: 40px 60px;
             box-shadow: 15px 15px 0 var(--pop-black);
             width: 960px; 
             display: flex;
@@ -73,9 +63,11 @@
             align-items: center;
             z-index: 10; 
             box-sizing: border-box;
+            
+            /* 保持之前的右边距，平衡视觉 */
+            margin-right: 80px; 
         }
 
-        /* 标题 */
         .main-title {
             font-size: 2rem; 
             font-weight: 700;
@@ -86,9 +78,8 @@
             font-family: 'Courier New', Courier, monospace;
         }
 
-        /* 轮盘视窗 */
         .slots-window {
-            width: 88%; 
+            width: 90%; 
             display: flex;
             justify-content: space-between;
             gap: 20px; 
@@ -106,7 +97,6 @@
             width: 32%;
         }
 
-        /* 标签 */
         .reel-label {
             color: var(--pop-orange);
             background: #333333;
@@ -120,7 +110,6 @@
             border: 1px solid #444;
         }
 
-        /* 轮盘列 */
         .reel-col {
             width: 100%;
             height: var(--slot-height); 
@@ -130,7 +119,6 @@
             overflow: hidden;
         }
 
-        /* 内阴影遮罩 */
         .reel-col::after {
             content: "";
             position: absolute;
@@ -166,22 +154,16 @@
 
         .blur-motion { filter: blur(5px); }
 
-        /* 
-           ===== 2. 结果显示区 (完美居中修复) =====
-        */
         #output-display {
             background: var(--pop-white);
             border: var(--border-thin);
-            width: 88%; 
+            width: 90%; 
             height: 110px; 
             border-radius: 8px;
-            
-            /* Flex 居中三件套 */
             display: flex;
             flex-direction: column; 
-            justify-content: center; /* 垂直居中 */
-            align-items: center;     /* 水平居中 */
-            
+            justify-content: center; 
+            align-items: center;     
             text-align: center;
             padding: 0 20px; 
             margin-top: 30px;
@@ -195,7 +177,6 @@
         
         .highlight { color: var(--pop-orange); font-weight: bold; }
 
-        /* 按钮 */
         button#spin-btn {
             background: var(--pop-orange);
             color: var(--pop-white);
@@ -225,40 +206,40 @@
         }
 
         /* 
-           ===== 3. 把手组件 (位置终极修正) ===== 
-           - right: 10px -> 紧贴黄色机身右侧
-           - bottom: 60px -> 大幅下移，底座对齐机器下部，不再飞在天上
+           ===== 把手组件 ===== 
+           关键修改：z-index 提升到 20，确保在机器(z-index:10)之上
         */
         .handle-assembly {
             position: absolute; 
-            right: 5px;   /* 靠里一点，贴住边框 */
-            bottom: 60px;  /* 下移到底部区域 */
-            width: 60px;
-            height: 220px;
+            right: 0px; 
+            bottom: 100px; 
+            width: 100px; 
+            height: 320px; 
+            /* 🔴 修改点：层级改为 20 */
             z-index: 20; 
             perspective: 800px;
         }
 
         .handle-base {
-            width: 40px;
-            height: 80px;
+            width: 60px; 
+            height: 120px; 
             background: #999;
             border: var(--border-thick);
-            border-left: var(--border-thick); 
-            border-radius: 12px;
+            border-left: none; 
+            border-radius: 0 16px 16px 0;
             position: absolute;
             bottom: 40px;
-            left: 0;
-            box-shadow: 6px 6px 0px var(--pop-black);
+            left: 0; 
+            box-shadow: inset -5px -5px 10px rgba(0,0,0,0.2); 
             z-index: 1;
         }
 
         .handle-stick-group {
             position: absolute;
-            bottom: 75px;
-            left: 10px;
+            bottom: 80px; 
+            left: 20px;   
             width: 30px;
-            height: 240px;
+            height: 300px; 
             cursor: grab;
             z-index: 2;
             transform-origin: bottom center;
@@ -269,26 +250,26 @@
         .handle-stick-group:active { cursor: grabbing; }
 
         .handle-pole {
-            width: 14px;
-            height: 200px;
+            width: 20px; 
+            height: 260px; 
             background: linear-gradient(90deg, #ccc, #eee, #bbb);
             border: 3px solid #111;
-            border-radius: 8px;
+            border-radius: 10px;
             position: absolute;
             bottom: 0;
-            left: 8px;
+            left: 5px; 
         }
 
         .handle-knob {
-            width: 80px;
-            height: 80px;
+            width: 100px; 
+            height: 100px;
             background: var(--pop-orange);
             border: 4px solid var(--pop-black);
             border-radius: 50%;
             position: absolute;
-            top: -40px;
-            left: -25px;
-            box-shadow: -2px 2px 0 rgba(0,0,0,0.2);
+            top: -50px;
+            left: -35px; 
+            box-shadow: -4px 4px 0 rgba(0,0,0,0.2);
             transform-origin: center center;
             transform: rotateX(-10deg) translateZ(20px); 
         }
@@ -296,10 +277,10 @@
         .handle-knob::after {
             content: "";
             position: absolute;
-            top: 15px;
-            left: 18px;
-            width: 18px;
-            height: 18px;
+            top: 20px;
+            left: 22px;
+            width: 22px;
+            height: 22px;
             background: white;
             border-radius: 50%;
         }
@@ -307,10 +288,10 @@
         .handle-knob::before {
             content: "";
             position: absolute;
-            top: 38px;
-            left: 12px;
-            width: 8px;
-            height: 8px;
+            top: 50px;
+            left: 15px;
+            width: 10px;
+            height: 10px;
             background: white;
             border-radius: 50%;
         }
@@ -341,7 +322,7 @@
             <h1 class="main-title">A DAY AS AI</h1>
             
             <div class="slots-window">
-                <!-- 左轮: EMBODIED -->
+                <!-- 左轮 -->
                 <div class="col-wrapper">
                     <div class="reel-label">EMBODIED</div>
                     <div class="reel-col"><div class="reel-strip" id="reel-1"></div></div>
@@ -358,7 +339,6 @@
                 </div>
             </div>
 
-            <!-- 结果显示区 (双行) -->
             <div id="output-display">
                 <div>System Ready.</div>
                 <div>Drag lever to generate...</div>
@@ -377,11 +357,11 @@
 
     <script>
         // ==========================================
-        // AUTO SCALING LOGIC
+        // AUTO SCALING LOGIC (自适应逻辑)
         // ==========================================
         function autoResize() {
             const wrapper = document.getElementById('scale-wrapper');
-            const baseWidth = 1120; 
+            const baseWidth = 1100; 
             const baseHeight = 850; 
             
             const windowWidth = window.innerWidth;
@@ -567,7 +547,7 @@
             leverKnob.classList.add('knob-transition');
             const deltaY = e.clientY - startY;
             leverStick.style.transform = `rotateX(${START_ANGLE}deg)`;
-            leverKnob.style.transform = `rotateX(${-START_ANGLE}deg) translateZ(10px)`;
+            leverKnob.style.transform = `rotateX(${-START_ANGLE}deg) translateZ(20px)`;
             if(deltaY > 100) {
                 startSpin();
             }
