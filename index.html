@@ -22,7 +22,6 @@
 
         body {
             background-color: var(--pop-bg);
-            /* 背景：黄色波点 */
             background-image: radial-gradient(var(--pop-yellow) 2.5px, transparent 2.5px);
             background-size: 30px 30px;
             display: flex;
@@ -48,7 +47,7 @@
             width: 1100px; 
             height: 750px; 
             transform-origin: center center;
-            top: -100px; 
+            top: -50px; 
         }
 
         /* --- 机器主体 --- */
@@ -158,17 +157,17 @@
             background: var(--pop-white);
             border: var(--border-thin);
             width: 88%;
-            min-height: 90px;
+            height: 110px; 
             border-radius: 8px;
             display: flex;
             flex-direction: column; 
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 15px 20px;
+            padding: 0 20px; 
             margin-top: 25px;
-            font-size: 1rem;
-            line-height: 1.6;
+            font-size: 1.1rem;
+            line-height: 1.5;
             color: #333;
             box-sizing: border-box;
             font-family: 'Courier New', Courier, monospace;
@@ -177,85 +176,96 @@
         
         .highlight { color: var(--pop-orange); font-weight: bold; }
 
-        button#spin-btn {
-            background: var(--pop-orange);
-            color: var(--pop-white);
+        /* 按钮容器 */
+        .controls-row {
+            margin-top: 30px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        button {
             border: var(--border-thick);
             font-size: 1.6rem;
-            padding: 15px 80px;
+            padding: 15px 60px;
             border-radius: 60px;
             cursor: pointer;
             font-family: 'Courier New', Courier, monospace;
             font-weight: 900;
             box-shadow: 6px 6px 0 var(--pop-black);
-            margin-top: 30px;
             transition: all 0.1s;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             text-transform: uppercase; 
         }
 
-        button#spin-btn:active {
+        button:active {
             transform: translate(3px, 3px);
             box-shadow: 3px 3px 0 var(--pop-black);
         }
-        button#spin-btn:disabled {
-            background: #888;
+        button:disabled {
+            background: #888 !important;
+            color: #ccc !important;
             cursor: not-allowed;
             box-shadow: none;
             transform: translate(3px, 3px);
         }
 
-        /* 
-           ===== 把手组件 (像素级还原参考图) ===== 
-        */
+        #spin-btn {
+            background: var(--pop-orange);
+            color: var(--pop-white);
+        }
+
+        #print-btn {
+            background: #333;
+            color: white;
+            display: none; 
+            padding: 15px 30px; 
+            font-size: 1.4rem;
+        }
+
+        /* 把手组件 */
         .handle-assembly {
             position: absolute; 
-            /* 向右偏移，挂在机器外面 */
-            right: 10px; 
-            /* 垂直位置：对齐文字框附近 */
-            bottom: 100px; 
-            
+            right: 23px; 
+            bottom: 150px; 
             width: 100px; 
             height: 350px; 
-            z-index: 20; /* 确保在最上层 */
+            z-index: 20; 
             perspective: 800px;
         }
 
-        /* 底座：参考图中的灰色圆角矩形 */
         .handle-base {
             width: 50px; 
             height: 90px; 
-            background: #999; /* 灰色 */
-            border: 4px solid var(--pop-black); /* 黑色粗边框 */
-            border-radius: 12px; /* 圆角 */
+            background: #999; 
+            border: 4px solid var(--pop-black); 
+            border-radius: 12px; 
             position: absolute;
             bottom: 0;
-            left: 10px; /* 稍微居中 */
-            /* 右下角的黑色硬阴影 */
+            left: 10px; 
             box-shadow: 6px 6px 0 var(--pop-black); 
             z-index: 1;
         }
 
-        /* 摇杆组 */
         .handle-stick-group {
             position: absolute;
-            bottom: 60px; /* 旋转轴心在底座内部 */
-            left: 25px;   /* 居中 */
+            bottom: 60px; 
+            left: 25px;   
             width: 20px;
             height: 300px; 
             cursor: grab;
             z-index: 2;
             transform-origin: bottom center;
             transform-style: preserve-3d;
-            transform: rotateX(0deg); /* 默认直立 */
+            transform: rotateX(0deg); 
         }
         
         .handle-stick-group:active { cursor: grabbing; }
 
-        /* 杆子：参考图中的银白色细长杆 */
         .handle-pole {
             width: 16px; 
-            height: 210px; 
+            height: 240px; 
             background: linear-gradient(90deg, #ddd, #fff, #bbb);
             border: 3px solid #111;
             border-radius: 10px;
@@ -264,7 +274,6 @@
             left: 2px; 
         }
 
-        /* 球头：参考图中的橙色大球 */
         .handle-knob {
             width: 90px; 
             height: 90px;
@@ -272,17 +281,13 @@
             border: 4px solid var(--pop-black);
             border-radius: 50%;
             position: absolute;
-            top: -10px;
-            left: -35px; /* 居中校准 */
-            
-            /* 球体下方的阴影 */
+            top: -20px;
+            left: -35px; 
             box-shadow: -3px 3px 0 rgba(0,0,0,0.2);
-            
             transform-origin: center center;
             transform: rotateX(0deg) translateZ(20px); 
         }
 
-        /* ⚪️ 高光点 1：左上角的大椭圆 */
         .handle-knob::after {
             content: "";
             position: absolute;
@@ -292,10 +297,9 @@
             height: 15px;
             background: white;
             border-radius: 50%;
-            transform: rotate(-45deg); /* 旋转一点角度更自然 */
+            transform: rotate(-45deg); 
         }
 
-        /* ⚪️ 高光点 2：下方的小圆点 */
         .handle-knob::before {
             content: "";
             position: absolute;
@@ -311,19 +315,199 @@
         .knob-transition { transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
         .pole-pulled-animation { animation: poleAction 0.6s ease-in-out; }
-        @keyframes poleAction {
-            0% { transform: rotateX(0deg); }
-            50% { transform: rotateX(-50deg); } 
-            100% { transform: rotateX(0deg); }
-        }
-
+        @keyframes poleAction { 0% { transform: rotateX(0deg); } 50% { transform: rotateX(-50deg); } 100% { transform: rotateX(0deg); } }
         .knob-pulled-animation { animation: knobAction 0.6s ease-in-out; }
-        @keyframes knobAction {
-            0% { transform: rotateX(0deg) translateZ(20px); }
-            50% { transform: rotateX(50deg) translateZ(20px); } 
-            100% { transform: rotateX(0deg) translateZ(20px); }
-        }
+        @keyframes knobAction { 0% { transform: rotateX(0deg) translateZ(20px); } 50% { transform: rotateX(50deg) translateZ(20px); } 100% { transform: rotateX(0deg) translateZ(20px); } }
 
+        /* 
+           =========================================================
+           🌟 打印卡片专用样式 (完全复刻您的参考图)
+           =========================================================
+        */
+/* 
+           ===== 🖨️ 打印专用样式 (修复背景色版) ===== 
+        */
+ /* 
+           ===== 🖨️ 打印专用样式 (最终修正版) ===== 
+        */
+/* 
+           ===== 🖨️ 打印专用样式 (最终修正版) ===== 
+        */
+/* 
+           ===== 🖨️ 打印专用样式 (最终精修版) ===== 
+        */
+   /* 
+           ===== 🖨️ 打印专用样式 (ID对齐 + 瘦长三角版) ===== 
+        */
+        #print-area { display: none; }
+
+        @media print {
+            body { visibility: hidden; background: none !important; }
+            body * { visibility: hidden; } 
+            
+            #print-area, #print-area * { 
+                visibility: visible; 
+            }
+
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            @page {
+                size: 100mm 148mm;
+                margin: 0; 
+            }
+
+            #print-area {
+                position: fixed; 
+                left: 0; top: 0;
+                width: 100mm; height: 148mm;
+                background-color: #FFEE00 !important; 
+                background-image: none !important;
+                
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: center;
+                padding: 10mm;
+                box-sizing: border-box;
+                font-family: 'Courier New', Courier, monospace;
+                z-index: 9999;
+            }
+
+            /* --- Header 调整 --- */
+            .card-header {
+                width: 100%;
+                display: flex;
+                flex-direction: column; 
+                margin-bottom: 3mm;
+            }
+
+            /* 小标题行：左右两端对齐 */
+            .card-year-row {
+                width: 100%;
+                display: flex;
+                justify-content: space-between; /* 左边文字，右边ID */
+                align-items: center;
+                margin-bottom: 1mm;
+            }
+
+            .card-year-text, .card-id-text {
+                font-size: 6pt; 
+                font-weight: bold;
+                color: #121212;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+            }
+
+            /* 大标题 */
+            .card-role-name {
+                font-size: 20pt;
+                font-weight: 900;
+                text-transform: uppercase;
+                color: #121212;
+                letter-spacing: -1px;
+                line-height: 1;
+                text-align: left; /* 确保靠左 */
+            }
+
+            /* 中间视觉区 */
+            .card-visual-box {
+                width: 100%;
+                height: 75mm;
+                background-color: white !important;
+                border: 4px solid #121212;
+                border-radius: 6mm; 
+                position: relative;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-bottom: 4mm;
+                overflow: visible;
+            }
+
+            #p-img-main { width: 85%; height: 85%; object-fit: contain; }
+
+            /* 徽章 */
+            .card-badge {
+                position: absolute;
+                bottom: 3mm; right: 3mm;
+                width: 22mm; height: 22mm;
+                background-color: white !important;
+                border: 2px solid #ccc;
+                border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+                z-index: 5;
+            }
+            #p-img-sense { width: 75%; height: 75%; object-fit: contain; }
+
+            /* --- 黑色对话框 --- */
+            .card-task-bubble {
+                background-color: #121212 !important; 
+                color: #ffffff !important; 
+                font-weight: 900 !important;
+                width: 100%;
+                height: 30mm; 
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0 4mm; 
+                border-radius: 6mm; 
+                text-align: center;
+                position: relative;
+                box-sizing: border-box;
+                margin-bottom: 10mm;
+            }
+
+            /* 
+               🔴 修改点：瘦长三角形 
+            */
+            .card-task-bubble::after {
+                content: "";
+                position: absolute;
+                top: -10mm; /* 向上延伸更多 */
+                
+                /* 对齐 Sensory 中心 */
+                /* Badge center is approx 3mm(margin) + 11mm(half width) = 14mm from right */
+                right: 11mm; 
+                
+                width: 0; 
+                height: 0; 
+                
+                /* 瘦：左右边距减小 (3mm) */
+                border-left: 3mm solid transparent;
+                border-right: 3mm solid transparent;
+                
+                /* 长：底部高度增加 (12mm)，颜色为黑色 */
+                border-bottom: 12mm solid #121212; 
+                
+                /* 不需要旋转了，直接用border画三角形 */
+                transform: none; 
+            }
+
+            .task-text {
+                font-size: 11pt;
+                font-weight: 900;
+                text-transform: uppercase;
+                line-height: 1.3;
+                letter-spacing: 1px;
+            }
+
+            /* 底部时间戳 */
+            .card-footer {
+                position: absolute;
+                bottom: 8mm;
+                font-size: 8pt;
+                font-weight: bold;
+                letter-spacing: 1px;
+                color: #121212;
+            }
+        }
+     
     </style>
 </head>
 <body>
@@ -333,7 +517,7 @@
             <h1 class="main-title">A DAY AS AI</h1>
             
             <div class="slots-window">
-                <!-- 左轮 -->
+                <!-- 左轮: EMBODIED -->
                 <div class="col-wrapper">
                     <div class="reel-label">EMBODIED</div>
                     <div class="reel-col"><div class="reel-strip" id="reel-1"></div></div>
@@ -351,10 +535,14 @@
             </div>
 
             <div id="output-display">
-                <div>System Ready.</div>
-                <div>Drag lever to generate...</div>
+                <div>Reading inputs...</div>
             </div>
-            <button id="spin-btn">GENERATE</button>
+            
+            <!-- 按钮组 -->
+            <div class="controls-row">
+                <button id="spin-btn">GENERATE</button>
+                <button id="print-btn">PRINT CARD</button>
+            </div>
         </div>
 
         <div class="handle-assembly">
@@ -364,6 +552,42 @@
                 <div class="handle-knob knob-transition" id="lever-knob"></div>
             </div>
         </div>
+    </div>
+
+    <!-- 
+       =========================================================
+       🖨️ 打印专用隐藏区域 (参考 Pink Cage 卡片)
+       =========================================================
+    -->
+    <div id="print-area">
+
+   <div id="print-area">
+        <!-- Header -->
+        <div class="card-header">
+            <!-- 第一行：左边文字，右边ID -->
+            <div class="card-year-row">
+                <span class="card-year-text">A DAY AS AI 2025</span>
+                <span id="p-id" class="card-id-text">ID: 000000</span>
+            </div>
+            <!-- 第二行：大标题 -->
+            <div id="p-name" class="card-role-name">ROLE NAME</div>
+        </div>
+
+        <!-- 视觉区域 -->
+        <div class="card-visual-box">
+            <img id="p-img-main" src="" alt="Main Body">
+            <div class="card-badge">
+                <img id="p-img-sense" src="" alt="Sense">
+            </div>
+        </div>
+
+        <!-- 任务气泡 -->
+        <div class="card-task-bubble">
+            “ <span id="p-task">TASK GOES HERE</span> ”
+        </div>
+
+        <!-- 页脚 -->
+        <div id="p-date" class="card-footer">TIMESTAMP</div>
     </div>
 
     <script>
@@ -518,6 +742,7 @@
         }
 
         const spinBtn = document.getElementById('spin-btn');
+        const printBtn = document.getElementById('print-btn');
         const leverStick = document.getElementById('lever-stick');
         const leverKnob = document.getElementById('lever-knob');
         const outputDisplay = document.getElementById('output-display');
@@ -526,7 +751,7 @@
         // --- Drag Logic ---
         let isDragging = false;
         let startY = 0;
-        const START_ANGLE = 0; // 改回0度直立
+        const START_ANGLE = 0; 
         const MAX_PULL_ANGLE = -50; 
         const MAX_DRAG_PIXELS = 250; 
         
@@ -570,7 +795,8 @@
             isSpinning = true;
             spinBtn.disabled = true;
             spinBtn.innerText = "PROCESSING...";
-            outputDisplay.innerHTML = "<div>Reading inputs...</div><div>&nbsp;</div>";
+            outputDisplay.innerHTML = "<div>Reading inputs...</div>";
+            printBtn.style.display = 'none';
 
             if (!isDragging) { 
                 leverStick.classList.add('pole-pulled-animation');
@@ -604,7 +830,7 @@
             });
         }
 
-        function finishSpin(results) {
+function finishSpin(results) {
             isSpinning = false;
             spinBtn.disabled = false;
             spinBtn.innerText = "GENERATE";
@@ -613,9 +839,28 @@
                 <div>INITIATING <span class="highlight">${results[2].label}</span>.</div>
             `;
             outputDisplay.innerHTML = text;
+
+            // --- 打印卡片填充数据 ---
+            document.getElementById('p-name').innerText = results[0].label;
+            document.getElementById('p-img-main').src = results[0].value;
+            document.getElementById('p-img-sense').src = results[1].value;
+            document.getElementById('p-task').innerText = results[2].label;
+            
+            // 生成随机 ID (6位数)
+            const randomID = Math.floor(Math.random() * 900000) + 100000;
+            document.getElementById('p-id').innerText = `ID: ${randomID}`;
+
+            // 生成时间戳
+            const now = new Date();
+            const dateStr = `- ${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} // ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')} -`;
+            document.getElementById('p-date').innerText = dateStr;
+
+            printBtn.style.display = 'block';
         }
 
         spinBtn.addEventListener('click', startSpin);
+        printBtn.addEventListener('click', () => { window.print(); });
+
         initReels();
     </script>
 </body>
