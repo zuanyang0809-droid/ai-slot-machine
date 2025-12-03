@@ -5,18 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ABOUT - A DAY AS AI</title>
     <style>
-        /* --- 配色反转 (Dark Mode) --- */
+        /* --- 配色设置 --- */
         :root {
             --pop-yellow: #FFEE00; 
             --pop-orange: #FF6A3B; 
             --pop-black: #121212; 
             --pop-white: #ffffff;
             
-            /* 🔴 修改：背景改为橘色 */
-            --page-bg: #FFEE00; /* ✅ 改成黄色 */   
+            /* 🔴 修改点 1：背景改为黄色 */
+            --page-bg: #FFEE00;       
             
-            /* 内容框保持黑色 */
+            /* 内容框：黑色 */
             --content-bg: #121212;    
+            
+            /* 文字：白色 */
             --text-color: #ffffff;    
             --border-color: #ffffff;  
             
@@ -25,12 +27,14 @@
 
         body {
             background-color: var(--page-bg);
-            /* ✅ 把 var(--pop-yellow) 改成 var(--pop-white) */
+            
+            /* 🔴 修改点 2：波点颜色改为白色 (var(--pop-white)) */
             background-image: radial-gradient(var(--pop-white) 2.5px, transparent 2.5px);
+            
             background-size: 30px 30px;
             font-family: 'Courier New', Courier, monospace;
             margin: 0;
-            padding: 40px 20px 140px 20px;
+            padding: 140px 20px 140px 20px;
             color: var(--text-color);
             overflow-y: auto;
             overflow-x: hidden;
@@ -38,11 +42,12 @@
             justify-content: center;
         }
 
-        /* --- 内容容器 --- */
+        /* --- 中间内容容器 --- */
         .container {
             background: var(--content-bg);
             border: var(--border-thick);
             border-radius: 20px;
+            /* 纯白硬阴影 */
             box-shadow: 15px 15px 0 #ffffff;
             max-width: 1100px;
             width: 100%;
@@ -100,9 +105,9 @@
             margin: 20px 0;
             background: rgba(255, 106, 59, 0.1); 
             padding: 15px 20px;
-            color: var(--text-color);
-            font-size: 1rem;   /* 强制和其他段落一样大 */
-            line-height: 1.6;  /* 统一行高 */
+            color: #ddd;
+            font-size: 1rem;
+            line-height: 1.6;
         }
 
         ul {
@@ -111,9 +116,8 @@
         }
         li {
             margin-bottom: 10px;
-            line-height: 1.6;
-            font-size: 1rem;   /* 强制和其他段落一样大 */
-            color: var(--text-color);
+            line-height: 1.5;
+            font-size: 1rem;
         }
 
         .small-print {
@@ -125,35 +129,47 @@
             padding-top: 10px;
         }
 
-              .nav-btn {
-            position: fixed;
-            top: 30px;
-            right: 40px;
-            
-            /* 无背景无边框 */
-            background: transparent;
-            border: none;
-            box-shadow: none;
-            
-            /* 橙色文字 */
-            color: var(--pop-orange);
-            
-            text-decoration: none;
-            font-family: 'Courier New', Courier, monospace;
-            font-weight: 900;
-            font-size: 1.5rem;
-            z-index: 1000;
-            transition: all 0.2s;
-            cursor: pointer;
+        .section-divider {
+            width: 100%;
+            height: 0;
+            border-top: 2px dashed #555; 
+            margin: 40px 0; 
         }
 
-        .nav-btn:hover {
-            transform: scale(1.1);
-            color: var(--pop-black; /* 悬停变白 */
+        /* --- 返回按钮 --- */
+        .back-btn-container {
+            margin-top: 60px;
+            text-align: center;
         }
-        
+
+        .back-btn {
+            display: inline-block;
+            background: var(--pop-orange); 
+            color: var(--pop-black);
+            border: var(--border-thick); 
+            font-size: 1.5rem;
+            padding: 15px 60px;
+            border-radius: 60px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 900;
+            box-shadow: 6px 6px 0 var(--pop-white); 
+            transition: all 0.1s;
+            text-transform: uppercase;
+        }
+
+        .back-btn:hover {
+            background: var(--pop-white);
+            color: var(--pop-black);
+        }
+
+        .back-btn:active {
+            transform: translate(3px, 3px);
+            box-shadow: 3px 3px 0 var(--pop-white);
+        }
+
         /* 
-           ===== 底部跑马灯样式 (修改：去边框) ===== 
+           ===== 底部跑马灯样式 ===== 
         */
         #marquee-container {
             position: fixed;
@@ -161,7 +177,10 @@
             left: 0;
             width: 100%;
             height: 100px;
-            background-color: var(--pop-white); 
+            
+            /* 轨道背景：黑色 */
+            background-color: var(--pop-black); 
+            
             border-top: 4px solid var(--pop-yellow);
             overflow: hidden;
             display: flex;
@@ -170,30 +189,55 @@
             box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
         }
 
-        #marquee-track {
+        /* 顶部跑马灯 */
+        #marquee-top {
+            top: 0;
+            border-bottom: 4px solid var(--pop-yellow);
+        }
+
+        /* 底部跑马灯 */
+        #marquee-bottom {
+            bottom: 0;
+            border-top: 4px solid var(--pop-yellow);
+        }
+
+        .marquee-track {
             display: flex;
             gap: 40px; 
-            animation: marqueeMove linear infinite;
-            transform: translateX(0);
             white-space: nowrap;
         }
 
-        @keyframes marqueeMove {
+        /* 动画方向 */
+        .scroll-right {
+            animation: moveRight 60s linear infinite;
+            transform: translateX(-100%);
+        }
+        .scroll-left {
+            animation: moveLeft 60s linear infinite;
+            transform: translateX(0);
+        }
+
+        @keyframes moveRight {
             0% { transform: translateX(-100%); } 
             100% { transform: translateX(0%); } 
         }
+
+        @keyframes moveLeft {
+            0% { transform: translateX(0%); } 
+            100% { transform: translateX(-100%); } 
+        }
         
-        /* 跑马灯元素 */
+        /* 跑马灯内的小卡片 */
         .marquee-item {
             height: 70px;
             display: flex;
             align-items: center;
             justify-content: center;
             
-            /* 背景保持白色 */
+            /* 卡片背景：白色 */
             background: var(--pop-white); 
             
-            /* 🔴 修改点 3：去掉了边框 */
+            /* 无边框 */
             border: none; 
             
             border-radius: 10px;
@@ -211,25 +255,29 @@
             font-size: 2.5rem;
         }
 
-        /* 响应式适配 */
+        /* 响应式 */
         @media (max-width: 600px) {
             .container { padding: 30px; width: 90%; }
             h1 { font-size: 1.8rem; }
             h2 { font-size: 1.1rem; }
-            #marquee-container { height: 80px; }
+            .marquee-bar { height: 80px; }
             .marquee-item { height: 50px; }
             .marquee-item img { height: 35px; }
         }
     </style>
 </head>
 <body>
-    <a href="index.html" class="nav-btn">MACHINE</a>
+
+    <!-- 顶部跑马灯 (向左滚) -->
+    <div id="marquee-top" class="marquee-bar">
+        <div id="track-top" class="marquee-track scroll-left"></div>
+    </div>
+
     <div class="container">
         <h1>A Day As AI</h1>
         <div class="subtitle">DESIGNER: Chloe Ni & Anyang Zu // 2025</div>
 
         <h2>About The Project</h2>
-        <div class="small-print">
         <p><strong>A Day As AI</strong> imagines what a “day” might feel like from the perspective of an artificial intelligence.</p>
         <p>Instead of presenting AI as abstract code or neutral logic, the project breaks down machine perception into three intertwined modes—<strong>Embodied, Sensory, and Intent</strong>.</p>
         <p>By slot-machine randomization and playful visual recombinations, the interface stages how AI might construct meaning from gestures, physical cues, and situational prompts.</p>
@@ -237,8 +285,9 @@
             This project sits between interaction design, digital cognition, and performative imagery. It treats the body as an input system, the environment as data, and the machine as an observer trying to understand the world through fragments.
         </div>
 
+        <div class="section-divider"></div>
+
         <h2>How To Use</h2>
-        <div class="small-print">
         <p><strong>1. Pull the lever</strong> to generate a new combination.</p>
         <p><strong>2. The system selects:</strong></p>
         <ul>
@@ -248,6 +297,8 @@
         </ul>
         <p>Together they form a speculative “moment” of AI perception—an imagined micro-narrative of how an AI interprets bodies, objects, and motivations.</p>
         <p>Each refresh simulates a different reading, gesture, or interpretation, offering a playful entry into machine logic and embodied intelligence.</p>
+
+        <div class="section-divider"></div>
 
         <h2>Citation — Embodied Imagery</h2>
         <div class="small-print">
@@ -261,13 +312,14 @@
             <p>Sources include Art Basel, Dezeen, SFGate, Colossal, NotoFu, HappenArt, and artist studio archives.</p>
         </div>
 
+        <div class="back-btn-container">
+            <a href="index.html" class="back-btn">BACK TO MACHINE</a>
+        </div>
     </div>
 
-    <!-- 底部跑马灯容器 -->
-    <div id="marquee-container">
-        <div id="marquee-track">
-            <!-- JS 填充内容 -->
-        </div>
+    <!-- 底部跑马灯 (向右滚) -->
+    <div id="marquee-bottom" class="marquee-bar">
+        <div id="track-bottom" class="marquee-track scroll-right"></div>
     </div>
 
     <script>
@@ -337,7 +389,36 @@
             track.style.animationDuration = `${duration}s`;
         }
 
-        initMarquee();
+        // 统一初始化
+        function fillMarquee(trackId) {
+            let allItems = [
+                ...DATASETS.embodied,
+                ...DATASETS.sensory,
+                ...DATASETS.intentionality
+            ];
+            for (let i = allItems.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [allItems[i], allItems[j]] = [allItems[j], allItems[i]];
+            }
+            const track = document.getElementById(trackId);
+            const displayItems = [...allItems, ...allItems, ...allItems];
+            let htmlContent = '';
+            displayItems.forEach(item => {
+                let inner = '';
+                if (item.type === 'img') {
+                    inner = `<img src="${item.value}" alt="img">`;
+                } else {
+                    inner = `<span class="marquee-emoji">${item.value}</span>`;
+                }
+                htmlContent += `<div class="marquee-item">${inner}</div>`;
+            });
+            track.innerHTML = htmlContent;
+            const duration = (displayItems.length * 100) / 50; 
+            track.style.animationDuration = `${duration}s`;
+        }
+
+        fillMarquee('track-top');
+        fillMarquee('track-bottom');
 
     </script>
 
