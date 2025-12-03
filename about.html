@@ -13,7 +13,7 @@
             --pop-white: #ffffff;
             
             /* 🔴 修改：背景改为橘色 */
-            --page-bg: #FF6A3B;       
+            --page-bg: #FFEE00;       
             
             /* 内容框保持黑色 */
             --content-bg: #121212;    
@@ -25,7 +25,7 @@
 
         body {
             background-color: var(--page-bg);
-            background-image: radial-gradient(var(--pop-yellow) 2.5px, transparent 2.5px);
+            background-image: radial-gradient(var(--pop-white) 2.5px, transparent 2.5px);
             background-size: 30px 30px;
             font-family: 'Courier New', Courier, monospace;
             margin: 0;
@@ -120,41 +120,33 @@
             padding-top: 10px;
         }
 
-        /* --- 返回按钮 (修改：橙底黑字) --- */
-        .back-btn-container {
-            margin-top: 60px;
-            text-align: center;
-        }
-
-        .back-btn {
-            display: inline-block;
-            /* 🔴 修改点 1：橙色背景 */
-            background: var(--pop-orange); 
-            /* 🔴 修改点 2：黑色文字 */
-            color: var(--pop-black);
+              .nav-btn {
+            position: fixed;
+            top: 30px;
+            right: 40px;
             
-            border: var(--border-thick); 
-            font-size: 1.5rem;
-            padding: 15px 60px;
-            border-radius: 60px;
-            cursor: pointer;
+            /* 无背景无边框 */
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            
+            /* 橙色文字 */
+            color: var(--pop-orange);
+            
             text-decoration: none;
+            font-family: 'Courier New', Courier, monospace;
             font-weight: 900;
-            box-shadow: 6px 6px 0 var(--pop-white); 
-            transition: all 0.1s;
-            text-transform: uppercase;
+            font-size: 1.5rem;
+            z-index: 1000;
+            transition: all 0.2s;
+            cursor: pointer;
         }
 
-        .back-btn:hover {
-            background: var(--pop-white);
-            color: var(--pop-black);
+        .nav-btn:hover {
+            transform: scale(1.1);
+            color: var(--pop-white); /* 悬停变白 */
         }
-
-        .back-btn:active {
-            transform: translate(3px, 3px);
-            box-shadow: 3px 3px 0 var(--pop-white);
-        }
-
+        
         /* 
            ===== 底部跑马灯样式 (修改：去边框) ===== 
         */
@@ -226,7 +218,7 @@
     </style>
 </head>
 <body>
-
+    <a href="index.html" class="nav-btn">MACHINE</a>
     <div class="container">
         <h1>A Day As AI</h1>
         <div class="subtitle">DESIGNER: Chloe Ni & Anyang Zu // 2025</div>
@@ -264,9 +256,6 @@
             <p>Sources include Art Basel, Dezeen, SFGate, Colossal, NotoFu, HappenArt, and artist studio archives.</p>
         </div>
 
-        <div class="back-btn-container">
-            <a href="index.html" class="back-btn">BACK TO MACHINE</a>
-        </div>
     </div>
 
     <!-- 底部跑马灯容器 -->
