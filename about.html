@@ -13,7 +13,7 @@
             --pop-white: #ffffff;
             
             /* 🔴 修改：背景改为橘色 */
-            --page-bg: #FFEE00;       
+            --page-bg: #FFEE00; /* ✅ 改成黄色 */   
             
             /* 内容框保持黑色 */
             --content-bg: #121212;    
@@ -25,6 +25,7 @@
 
         body {
             background-color: var(--page-bg);
+            /* ✅ 把 var(--pop-yellow) 改成 var(--pop-white) */
             background-image: radial-gradient(var(--pop-white) 2.5px, transparent 2.5px);
             background-size: 30px 30px;
             font-family: 'Courier New', Courier, monospace;
