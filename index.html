@@ -19,6 +19,33 @@
             --radius-inner: 10px;
             --slot-height: 140px; 
         }
+      
+      /* --- 右上角 ABOUT 按钮样式 --- */
+        .about-btn {
+            position: fixed; /* 固定在屏幕位置 */
+            top: 30px;
+            right: 40px;
+            background: var(--pop-black);
+            color: var(--pop-yellow);
+            text-decoration: none; /* 去掉下划线 */
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 900;
+            font-size: 1.2rem;
+            padding: 10px 30px;
+            border: 3px solid var(--pop-white); /* 白色边框形成反差 */
+            border-radius: 50px;
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+            z-index: 1000; /* 保证在最上层 */
+            transition: all 0.2s;
+        }
+
+        .about-btn:hover {
+            background: var(--pop-orange);
+            color: var(--pop-white);
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 var(--pop-black);
+            border-color: var(--pop-black);
+        }
 
         body {
             background-color: var(--pop-bg);
@@ -505,7 +532,7 @@
     </style>
 </head>
 <body>
-
+    <a href="about.html" class="about-btn">ABOUT</a>
     <div class="layout-wrapper" id="scale-wrapper">
         <div class="machine-container">
             <h1 class="main-title">A DAY AS AI</h1>
