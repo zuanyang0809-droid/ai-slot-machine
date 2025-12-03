@@ -12,7 +12,6 @@
             --pop-black: #121212; 
             --pop-white: #ffffff;
             
-            /* 🔴 修改点 1：背景改为黄色 */
             --page-bg: #FFEE00;       
             
             /* 内容框：黑色 */
@@ -27,14 +26,15 @@
 
         body {
             background-color: var(--page-bg);
-            
-            /* 🔴 修改点 2：波点颜色改为白色 (var(--pop-white)) */
+            /* 白色波点 */
             background-image: radial-gradient(var(--pop-white) 2.5px, transparent 2.5px);
-            
             background-size: 30px 30px;
             font-family: 'Courier New', Courier, monospace;
             margin: 0;
-            padding: 140px 20px 140px 20px;
+            
+            /* 🔴 修改点 1：顶部去掉跑马灯后，padding 减小回 40px */
+            padding: 40px 20px 140px 20px;
+            
             color: var(--text-color);
             overflow-y: auto;
             overflow-x: hidden;
@@ -47,7 +47,6 @@
             background: var(--content-bg);
             border: var(--border-thick);
             border-radius: 20px;
-            /* 纯白硬阴影 */
             box-shadow: 15px 15px 0 #ffffff;
             max-width: 1100px;
             width: 100%;
@@ -168,8 +167,31 @@
             box-shadow: 3px 3px 0 var(--pop-white);
         }
 
+        /* --- 右上角 MACHINE 按钮 --- */
+        .nav-btn {
+            position: fixed;
+            top: 30px;
+            right: 40px;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            color: var(--pop-orange);
+            text-decoration: none;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 900;
+            font-size: 1.5rem;
+            z-index: 1000;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-btn:hover {
+            transform: scale(1.1);
+            color: var(--pop-black);
+        }
+
         /* 
-           ===== 底部跑马灯样式 ===== 
+           ===== 底部跑马灯样式 (修改版) ===== 
         */
         #marquee-container {
             position: fixed;
@@ -178,8 +200,8 @@
             width: 100%;
             height: 100px;
             
-            /* 轨道背景：黑色 */
-            background-color: var(--pop-black); 
+            /* 🔴 修改点 2：轨道背景改为白色 */
+            background-color: var(--pop-white); 
             
             border-top: 4px solid var(--pop-yellow);
             overflow: hidden;
@@ -189,42 +211,17 @@
             box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
         }
 
-        /* 顶部跑马灯 */
-        #marquee-top {
-            top: 0;
-            border-bottom: 4px solid var(--pop-yellow);
-        }
-
-        /* 底部跑马灯 */
-        #marquee-bottom {
-            bottom: 0;
-            border-top: 4px solid var(--pop-yellow);
-        }
-
-        .marquee-track {
+        #marquee-track {
             display: flex;
             gap: 40px; 
+            animation: marqueeMove linear infinite;
+            transform: translateX(0);
             white-space: nowrap;
         }
 
-        /* 动画方向 */
-        .scroll-right {
-            animation: moveRight 60s linear infinite;
-            transform: translateX(-100%);
-        }
-        .scroll-left {
-            animation: moveLeft 60s linear infinite;
-            transform: translateX(0);
-        }
-
-        @keyframes moveRight {
+        @keyframes marqueeMove {
             0% { transform: translateX(-100%); } 
             100% { transform: translateX(0%); } 
-        }
-
-        @keyframes moveLeft {
-            0% { transform: translateX(0%); } 
-            100% { transform: translateX(-100%); } 
         }
         
         /* 跑马灯内的小卡片 */
@@ -234,8 +231,8 @@
             align-items: center;
             justify-content: center;
             
-            /* 卡片背景：白色 */
-            background: var(--pop-white); 
+            /* 卡片背景透明或白色，在白轨道上无边框就像漂浮 */
+            background: transparent; 
             
             /* 无边框 */
             border: none; 
@@ -260,7 +257,7 @@
             .container { padding: 30px; width: 90%; }
             h1 { font-size: 1.8rem; }
             h2 { font-size: 1.1rem; }
-            .marquee-bar { height: 80px; }
+            #marquee-container { height: 80px; }
             .marquee-item { height: 50px; }
             .marquee-item img { height: 35px; }
         }
@@ -268,16 +265,17 @@
 </head>
 <body>
 
-    <!-- 顶部跑马灯 (向左滚) -->
-    <div id="marquee-top" class="marquee-bar">
-        <div id="track-top" class="marquee-track scroll-left"></div>
-    </div>
+    <!-- 右上角 MACHINE 按钮 -->
+    <a href="index.html" class="nav-btn">MACHINE</a>
+
+    <!-- 🔴 修改：删除了顶部跑马灯 HTML -->
 
     <div class="container">
         <h1>A Day As AI</h1>
         <div class="subtitle">DESIGNER: Chloe Ni & Anyang Zu // 2025</div>
 
         <h2>About The Project</h2>
+        <div class="section-divider"></div>
         <p><strong>A Day As AI</strong> imagines what a “day” might feel like from the perspective of an artificial intelligence.</p>
         <p>Instead of presenting AI as abstract code or neutral logic, the project breaks down machine perception into three intertwined modes—<strong>Embodied, Sensory, and Intent</strong>.</p>
         <p>By slot-machine randomization and playful visual recombinations, the interface stages how AI might construct meaning from gestures, physical cues, and situational prompts.</p>
@@ -285,9 +283,8 @@
             This project sits between interaction design, digital cognition, and performative imagery. It treats the body as an input system, the environment as data, and the machine as an observer trying to understand the world through fragments.
         </div>
 
-        <div class="section-divider"></div>
-
         <h2>How To Use</h2>
+        <div class="section-divider"></div>
         <p><strong>1. Pull the lever</strong> to generate a new combination.</p>
         <p><strong>2. The system selects:</strong></p>
         <ul>
@@ -297,8 +294,6 @@
         </ul>
         <p>Together they form a speculative “moment” of AI perception—an imagined micro-narrative of how an AI interprets bodies, objects, and motivations.</p>
         <p>Each refresh simulates a different reading, gesture, or interpretation, offering a playful entry into machine logic and embodied intelligence.</p>
-
-        <div class="section-divider"></div>
 
         <h2>Citation — Embodied Imagery</h2>
         <div class="small-print">
@@ -318,13 +313,15 @@
     </div>
 
     <!-- 底部跑马灯 (向右滚) -->
-    <div id="marquee-bottom" class="marquee-bar">
-        <div id="track-bottom" class="marquee-track scroll-right"></div>
+    <div id="marquee-container">
+        <div id="marquee-track">
+            <!-- JS 填充内容 -->
+        </div>
     </div>
 
     <script>
         // ==========================================
-        // 1. 数据源 (与 index.html 保持一致)
+        // 1. 数据源
         // ==========================================
         const DATASETS = {
             embodied: [
@@ -384,41 +381,12 @@
 
             track.innerHTML = htmlContent;
             
-            // 速度保持较慢 (分母为50)
+            // 速度保持较慢
             const duration = (displayItems.length * 100) / 50; 
             track.style.animationDuration = `${duration}s`;
         }
 
-        // 统一初始化
-        function fillMarquee(trackId) {
-            let allItems = [
-                ...DATASETS.embodied,
-                ...DATASETS.sensory,
-                ...DATASETS.intentionality
-            ];
-            for (let i = allItems.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [allItems[i], allItems[j]] = [allItems[j], allItems[i]];
-            }
-            const track = document.getElementById(trackId);
-            const displayItems = [...allItems, ...allItems, ...allItems];
-            let htmlContent = '';
-            displayItems.forEach(item => {
-                let inner = '';
-                if (item.type === 'img') {
-                    inner = `<img src="${item.value}" alt="img">`;
-                } else {
-                    inner = `<span class="marquee-emoji">${item.value}</span>`;
-                }
-                htmlContent += `<div class="marquee-item">${inner}</div>`;
-            });
-            track.innerHTML = htmlContent;
-            const duration = (displayItems.length * 100) / 50; 
-            track.style.animationDuration = `${duration}s`;
-        }
-
-        fillMarquee('track-top');
-        fillMarquee('track-bottom');
+        initMarquee(); // 🔴 修复：只初始化底部跑马灯
 
     </script>
 
