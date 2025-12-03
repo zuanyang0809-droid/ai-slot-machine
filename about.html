@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABOUT - A DAY AS AI</title>
+    <style>
+        /* --- 复用主页配色 --- */
+        :root {
+            --pop-yellow: #FFEE00; 
+            --pop-orange: #FF6A3B; 
+            --pop-black: #121212;
+            --pop-white: #ffffff;
+            --pop-bg: #ffffff; 
+            --border-thick: 4px solid var(--pop-black);
+        }
+
+        body {
+            background-color: var(--pop-bg);
+            /* 黄色波点背景 */
+            background-image: radial-gradient(var(--pop-yellow) 2.5px, transparent 2.5px);
+            background-size: 30px 30px;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 40px 20px;
+            color: var(--pop-black);
+            /* 允许垂直滚动 */
+            overflow-y: auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* --- 内容容器 (类似说明书/档案卡) --- */
+        .container {
+            background: var(--pop-white);
+            border: var(--border-thick);
+            border-radius: 20px;
+            box-shadow: 15px 15px 0 var(--pop-black);
+            max-width: 800px;
+            width: 100%;
+            padding: 60px;
+            box-sizing: border-box;
+            position: relative;
+            margin-bottom: 50px;
+        }
+
+        /* --- 排版样式 --- */
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 4px solid var(--pop-black);
+            padding-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            font-weight: 900;
+            background: var(--pop-black);
+            color: var(--pop-yellow);
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 4px;
+            margin-top: 40px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--pop-orange);
+            margin-top: -10px;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+
+        p {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            text-align: justify; /* 两端对齐更像报纸/文档 */
+        }
+
+        /* 引用/强调部分 */
+        .highlight-box {
+            border-left: 6px solid var(--pop-orange);
+            padding-left: 20px;
+            margin: 20px 0;
+            background: rgba(255, 106, 59, 0.05);
+            padding: 15px 20px;
+        }
+
+        /* 列表样式 */
+        ul {
+            list-style-type: square;
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* 小字/引用部分 */
+        .small-print {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 10px;
+            line-height: 1.4;
+            border-top: 2px dashed #ccc;
+            padding-top: 10px;
+        }
+
+        /* --- 返回按钮 --- */
+        .back-btn-container {
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: var(--pop-orange);
+            color: var(--pop-white);
+            border: var(--border-thick);
+            font-size: 1.5rem;
+            padding: 15px 60px;
+            border-radius: 60px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 900;
+            box-shadow: 6px 6px 0 var(--pop-black);
+            transition: all 0.1s;
+            text-transform: uppercase;
+        }
+
+        .back-btn:active {
+            transform: translate(3px, 3px);
+            box-shadow: 3px 3px 0 var(--pop-black);
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 600px) {
+            .container { padding: 30px; width: 90%; }
+            h1 { font-size: 1.8rem; }
+            h2 { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>A Day As AI</h1>
+        <div class="subtitle">DESIGNER: Chloe Ni & Anyang Zu // 2025</div>
+
+        <h2>About The Project</h2>
+        <p><strong>A Day As AI</strong> imagines what a “day” might feel like from the perspective of an artificial intelligence.</p>
+        <p>Instead of presenting AI as abstract code or neutral logic, the project breaks down machine perception into three intertwined modes—<strong>Embodied, Sensory, and Intent</strong>.</p>
+        <p>By slot-machine randomization and playful visual recombinations, the interface stages how AI might construct meaning from gestures, physical cues, and situational prompts.</p>
+        <div class="highlight-box">
+            This project sits between interaction design, digital cognition, and performative imagery. It treats the body as an input system, the environment as data, and the machine as an observer trying to understand the world through fragments.
+        </div>
+
+        <h2>How To Use</h2>
+        <p><strong>1. Pull the lever</strong> to generate a new combination.</p>
+        <p><strong>2. The system selects:</strong></p>
+        <ul>
+            <li>One <strong>Embodied</strong> image</li>
+            <li>One <strong>Sensory</strong> marker</li>
+            <li>One <strong>Intent</strong> prompt</li>
+        </ul>
+        <p>Together they form a speculative “moment” of AI perception—an imagined micro-narrative of how an AI interprets bodies, objects, and motivations.</p>
+        <p>Each refresh simulates a different reading, gesture, or interpretation, offering a playful entry into machine logic and embodied intelligence.</p>
+
+        <h2>Citation — Embodied Imagery</h2>
+        <div class="small-print">
+            <p>The 35 embodied reference images used in this project are sourced from a wide range of artist archives, museum collections, design platforms, and Pinterest-curated visual boards. Images © their respective creators. They are used exclusively for non-commercial, research-based visualization.</p>
+        </div>
+
+        <h2>Selected References</h2>
+        <div class="small-print">
+            <p>Selected References include works by <strong>Erwin Wurm, Bea Camacho, Annie Collinge, Csilla Klenyanszki, Ernesto Neto, Rebecca Horn, Lucy McRae & Bart Hess, Charles Fréger, Craig Green, Andreas Senoner, Hoda Zarbaf</strong>, and others.</p>
+            <p>All referenced images and artworks remain © their respective creators. They are included here strictly for non-commercial, research-based visualization within the context of this project.</p>
+            <p>Sources include Art Basel, Dezeen, SFGate, Colossal, NotoFu, HappenArt, and artist studio archives.</p>
+        </div>
+
+        <div class="back-btn-container">
+            <a href="index.html" class="back-btn">BACK TO MACHINE</a>
+        </div>
+    </div>
+
+</body>
+</html>
