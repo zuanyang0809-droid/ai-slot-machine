@@ -20,31 +20,36 @@
             --slot-height: 140px; 
         }
       
-      /* --- 右上角 ABOUT 按钮样式 --- */
+    /* --- 右上角 ABOUT 按钮 (纯文字版) --- */
         .about-btn {
-            position: fixed; /* 固定在屏幕位置 */
+            position: fixed;
             top: 30px;
             right: 40px;
-            background: var(--pop-black);
-            color: var(--pop-yellow);
-            text-decoration: none; /* 去掉下划线 */
+            
+            /* 去掉背景、边框和阴影 */
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            
+            /* 设置文字颜色为橙色 */
+            color: var(--pop-orange);
+            
+            text-decoration: none;
             font-family: 'Courier New', Courier, monospace;
             font-weight: 900;
-            font-size: 1.2rem;
-            padding: 10px 30px;
-            border: 3px solid var(--pop-white); /* 白色边框形成反差 */
-            border-radius: 50px;
-            box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
-            z-index: 1000; /* 保证在最上层 */
+            font-size: 1.5rem; /* 稍微加大一点，因为没有框了，要显眼 */
+            z-index: 1000;
             transition: all 0.2s;
+            cursor: pointer;
         }
 
         .about-btn:hover {
-            background: var(--pop-orange);
-            color: var(--pop-white);
-            transform: translate(-2px, -2px);
-            box-shadow: 6px 6px 0 var(--pop-black);
-            border-color: var(--pop-black);
+            /* 悬停时稍微放大，或者变色，增加交互感 */
+            transform: scale(1.1);
+            color: var(--pop-black); /* 悬停时变黑 */
+            background: transparent;
+            box-shadow: none;
+            border: none;
         }
 
         body {
