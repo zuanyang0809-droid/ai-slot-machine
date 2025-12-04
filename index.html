@@ -19,6 +19,38 @@
             --radius-inner: 10px;
             --slot-height: 140px; 
         }
+      
+    /* --- 右上角 ABOUT 按钮 (纯文字版) --- */
+        .about-btn {
+            position: fixed;
+            top: 30px;
+            right: 40px;
+            
+            /* 去掉背景、边框和阴影 */
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            
+            /* 设置文字颜色为橙色 */
+            color: var(--pop-orange);
+            
+            text-decoration: none;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 900;
+            font-size: 1.5rem; /* 稍微加大一点，因为没有框了，要显眼 */
+            z-index: 1000;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .about-btn:hover {
+            /* 悬停时稍微放大，或者变色，增加交互感 */
+            transform: scale(1.1);
+            color: var(--pop-black); /* 悬停时变黑 */
+            background: transparent;
+            box-shadow: none;
+            border: none;
+        }
 
         body {
             background-color: var(--pop-bg);
