@@ -394,12 +394,16 @@
                 margin: 0; 
             }
 
+          /* 4. 卡片整体 (铺满画面) */
             #print-area {
                 position: fixed; 
                 left: 0; top: 0;
                 width: 100mm; height: 148mm;
                 background-color: #FFEE00 !important; 
                 background-image: none !important;
+                
+                /* 🔴 新增：强制放大 150% */
+                zoom: 1.5; 
                 
                 display: flex;
                 flex-direction: column;
