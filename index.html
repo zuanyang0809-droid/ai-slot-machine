@@ -19,41 +19,10 @@
             --radius-inner: 10px;
             --slot-height: 140px; 
         }
-      
-    /* --- 右上角 ABOUT 按钮 (纯文字版) --- */
-        .about-btn {
-            position: fixed;
-            top: 30px;
-            right: 40px;
-            
-            /* 去掉背景、边框和阴影 */
-            background: transparent;
-            border: none;
-            box-shadow: none;
-            
-            /* 设置文字颜色为橙色 */
-            color: var(--pop-orange);
-            
-            text-decoration: none;
-            font-family: 'Courier New', Courier, monospace;
-            font-weight: 900;
-            font-size: 1.5rem; /* 稍微加大一点，因为没有框了，要显眼 */
-            z-index: 1000;
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-
-        .about-btn:hover {
-            /* 悬停时稍微放大，或者变色，增加交互感 */
-            transform: scale(1.1);
-            color: var(--pop-black); /* 悬停时变黑 */
-            background: transparent;
-            box-shadow: none;
-            border: none;
-        }
 
         body {
             background-color: var(--pop-bg);
+            /* 背景：黄色波点 */
             background-image: radial-gradient(var(--pop-yellow) 2.5px, transparent 2.5px);
             background-size: 30px 30px;
             display: flex;
@@ -70,6 +39,31 @@
             -webkit-user-select: none;
         }
 
+        /* 
+           🔴 修复：找回了 ABOUT 按钮的样式 
+        */
+        .about-btn {
+            position: fixed;
+            top: 30px;
+            right: 40px;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            color: var(--pop-orange);
+            text-decoration: none;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 900;
+            font-size: 1.5rem;
+            z-index: 1000;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .about-btn:hover {
+            transform: scale(1.1);
+            color: var(--pop-black); /* 悬停变黑 */
+        }
+
         /* 布局容器 */
         .layout-wrapper {
             position: relative;
@@ -79,7 +73,7 @@
             width: 1100px; 
             height: 750px; 
             transform-origin: center center;
-            top: -100px; 
+            top: -50px; 
         }
 
         /* --- 机器主体 --- */
@@ -208,19 +202,41 @@
         
         .highlight { color: var(--pop-orange); font-weight: bold; }
 
-        /* 按钮容器 */
-        .controls-row {
-            margin-top: 30px;
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            align-items: center;
-        }
-
-        button {
+        button#spin-btn {
+            background: var(--pop-orange);
+            color: var(--pop-white);
             border: var(--border-thick);
             font-size: 1.6rem;
-            padding: 15px 60px;
+            padding: 15px 80px;
+            border-radius: 60px;
+            cursor: pointer;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 900;
+            box-shadow: 6px 6px 0 var(--pop-black);
+            margin-top: 35px;
+            transition: all 0.1s;
+            letter-spacing: 1px;
+            text-transform: uppercase; 
+        }
+
+        button#spin-btn:active {
+            transform: translate(3px, 3px);
+            box-shadow: 3px 3px 0 var(--pop-black);
+        }
+        button#spin-btn:disabled {
+            background: #888;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: translate(3px, 3px);
+        }
+
+        #print-btn {
+            background: #333;
+            color: white;
+            display: none; 
+            padding: 15px 30px; 
+            font-size: 1.4rem;
+            border: var(--border-thick);
             border-radius: 60px;
             cursor: pointer;
             font-family: 'Courier New', Courier, monospace;
@@ -230,36 +246,17 @@
             letter-spacing: 2px;
             text-transform: uppercase; 
         }
-
-        button:active {
-            transform: translate(3px, 3px);
+        #print-btn:active {
+             transform: translate(3px, 3px);
             box-shadow: 3px 3px 0 var(--pop-black);
         }
-        button:disabled {
-            background: #888 !important;
-            color: #ccc !important;
-            cursor: not-allowed;
-            box-shadow: none;
-            transform: translate(3px, 3px);
-        }
 
-        #spin-btn {
-            background: var(--pop-orange);
-            color: var(--pop-white);
-        }
-
-        #print-btn {
-            background: #333;
-            color: white;
-            display: none; 
-            padding: 15px 30px; 
-            font-size: 1.4rem;
-        }
-
-        /* 把手组件 */
+        /* 
+           ===== 把手组件 ===== 
+        */
         .handle-assembly {
             position: absolute; 
-            right: 23px; 
+            right: -30px; 
             bottom: 150px; 
             width: 100px; 
             height: 350px; 
@@ -313,7 +310,7 @@
             border: 4px solid var(--pop-black);
             border-radius: 50%;
             position: absolute;
-            top: -20px;
+            top: -45px;
             left: -35px; 
             box-shadow: -3px 3px 0 rgba(0,0,0,0.2);
             transform-origin: center center;
@@ -347,32 +344,21 @@
         .knob-transition { transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
         .pole-pulled-animation { animation: poleAction 0.6s ease-in-out; }
-        @keyframes poleAction { 0% { transform: rotateX(0deg); } 50% { transform: rotateX(-50deg); } 100% { transform: rotateX(0deg); } }
+        @keyframes poleAction {
+            0% { transform: rotateX(0deg); }
+            50% { transform: rotateX(-50deg); } 
+            100% { transform: rotateX(0deg); }
+        }
+
         .knob-pulled-animation { animation: knobAction 0.6s ease-in-out; }
-        @keyframes knobAction { 0% { transform: rotateX(0deg) translateZ(20px); } 50% { transform: rotateX(50deg) translateZ(20px); } 100% { transform: rotateX(0deg) translateZ(20px); } }
+        @keyframes knobAction {
+            0% { transform: rotateX(0deg) translateZ(20px); }
+            50% { transform: rotateX(50deg) translateZ(20px); } 
+            100% { transform: rotateX(0deg) translateZ(20px); }
+        }
 
         /* 
-           =========================================================
-           🌟 打印卡片专用样式 (完全复刻您的参考图)
-           =========================================================
-        */
-/* 
-           ===== 🖨️ 打印专用样式 (修复背景色版) ===== 
-        */
- /* 
-           ===== 🖨️ 打印专用样式 (最终修正版) ===== 
-        */
-/* 
-           ===== 🖨️ 打印专用样式 (最终修正版) ===== 
-        */
-/* 
-           ===== 🖨️ 打印专用样式 (最终精修版) ===== 
-        */
-   /* 
-           ===== 🖨️ 打印专用样式 (ID对齐 + 瘦长三角版) ===== 
-        */
-  /* 
-           ===== 🖨️ 打印专用样式 (修正版：大字体 + 圆形遮罩) ===== 
+           ===== 🖨️ 打印专用样式 ===== 
         */
         #print-area { display: none; }
 
@@ -394,17 +380,21 @@
                 margin: 0; 
             }
 
-          /* 4. 卡片整体 (铺满画面) */
             #print-area {
-                position: fixed; 
-                left: 0; top: 0;
-                width: 100mm; height: 148mm;
+                position: fixed;
+                left: 0; 
+                top: 0;
+                
+                width: 100mm; 
+                height: 148mm;
+
+                /* 强制放大 1.5 倍以适应 4x6 纸张 (视打印机情况而定) */
+                /* transform: scale(1.5); */
+                /* transform-origin: top left; */
+
                 background-color: #FFEE00 !important; 
                 background-image: none !important;
-                
-                /* 🔴 新增：强制放大 150% */
-                zoom: 1.5; 
-                
+
                 display: flex;
                 flex-direction: column;
                 justify-content: flex-start;
@@ -439,9 +429,8 @@
                 text-transform: uppercase;
             }
 
-            /* 🔴 修改点1：字体变大 */
             .card-role-name {
-                font-size: 32pt; /* 从 20pt 加大到 32pt */
+                font-size: 32pt; 
                 font-weight: 900;
                 text-transform: uppercase;
                 color: #121212;
@@ -467,9 +456,7 @@
 
             #p-img-main { width: 85%; height: 85%; object-fit: contain; }
 
-            /* 
-               🔴 修改点2：图片放在边框下面 (overflow: hidden) 
-            */
+            /* 徽章 (图片在下层) */
             .card-badge {
                 position: absolute;
                 bottom: 3mm; right: 3mm;
@@ -482,8 +469,6 @@
                 align-items: center;
                 box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
                 z-index: 5;
-                
-                /* 关键代码：剪裁超出圆形的图片内容 */
                 overflow: hidden; 
             }
             #p-img-sense { width: 75%; height: 75%; object-fit: contain; }
@@ -537,17 +522,19 @@
                 color: #121212;
             }
         }
-     
+
     </style>
 </head>
 <body>
+    <!-- 🔴 修复：找回了 ABOUT 按钮 -->
     <a href="about.html" class="about-btn">ABOUT</a>
+
     <div class="layout-wrapper" id="scale-wrapper">
         <div class="machine-container">
             <h1 class="main-title">A DAY AS AI</h1>
             
             <div class="slots-window">
-                <!-- 左轮: EMBODIED -->
+                <!-- 左轮 -->
                 <div class="col-wrapper">
                     <div class="reel-label">EMBODIED</div>
                     <div class="reel-col"><div class="reel-strip" id="reel-1"></div></div>
@@ -584,14 +571,8 @@
         </div>
     </div>
 
-    <!-- 
-       =========================================================
-       🖨️ 打印专用隐藏区域 (参考 Pink Cage 卡片)
-       =========================================================
-    -->
+    <!-- 🖨️ 打印专用隐藏区域 -->
     <div id="print-area">
-
-   <div id="print-area">
         <!-- Header -->
         <div class="card-header">
             <!-- 第一行：左边文字，右边ID -->
@@ -686,8 +667,6 @@
                 { type: 'img', value: 'assets/crop_row_5_col_6.png', label: 'Blue Bend' },
                 { type: 'img', value: 'assets/crop_row_5_col_7.png', label: 'Balance Object' },
             ],
-
-            // 中轮
             sensory: [
                 { type: 'img', value: 'assets/Layer 1.png', label: 'Optical Sensor' },      
                 { type: 'img', value: 'assets/Layer 2.png', label: 'Thermal Vision' },      
@@ -704,8 +683,6 @@
                 { type: 'img', value: 'assets/Layer 13.png', label: 'Grounding Data' },     
                 { type: 'img', value: 'assets/Layer 14.png', label: 'Chemical Taste' },     
             ],
-
-            // 右轮
             intentionality: [
                 { type: 'icon', value: '🔑', label: 'Stop Lost Keys' },
                 { type: 'icon', value: '🪴', label: 'Boost Plant Happiness' },
@@ -745,14 +722,9 @@
             ]
         };
 
-        const SLOT_HEIGHT = 140;
-
-        const REELS = [
-            { el: document.getElementById('reel-1'), data: DATASETS.embodied },
-            { el: document.getElementById('reel-2'), data: DATASETS.sensory },
-            { el: document.getElementById('reel-3'), data: DATASETS.intentionality }
-        ];
-
+        // ==========================================
+        // 2. 跑马灯逻辑
+        // ==========================================
         function initReels() {
             REELS.forEach((reelObj) => {
                 const { el, data } = reelObj;
@@ -860,7 +832,7 @@
             });
         }
 
-function finishSpin(results) {
+        function finishSpin(results) {
             isSpinning = false;
             spinBtn.disabled = false;
             spinBtn.innerText = "GENERATE";
@@ -876,27 +848,16 @@ function finishSpin(results) {
             document.getElementById('p-img-sense').src = results[1].value;
             document.getElementById('p-task').innerText = results[2].label;
             
-            // ==========================================
-            // 🆕 新 ID 生成逻辑：基于内容的唯一 ID
-            // ==========================================
-            // 1. 找到当前结果在原始列表中的序号 (Index)
-            // findIndex 会返回 0, 1, 2... 等数字
+            // 唯一 ID
             const idx1 = DATASETS.embodied.findIndex(item => item.label === results[0].label);
             const idx2 = DATASETS.sensory.findIndex(item => item.label === results[1].label);
             const idx3 = DATASETS.intentionality.findIndex(item => item.label === results[2].label);
-
-            // 2. 将序号格式化为两位数 (例如 5 -> "06", 12 -> "13")
-            // 这里 +1 是为了让 ID 从 01 开始而不是 00，看起来更像人类的编号习惯
             const num1 = String(idx1 + 1).padStart(2, '0');
             const num2 = String(idx2 + 1).padStart(2, '0');
             const num3 = String(idx3 + 1).padStart(2, '0');
+            document.getElementById('p-id').innerText = `ID: ${num1}${num2}${num3}`;
 
-            // 3. 组合成 6 位 ID
-            const uniqueID = `${num1}${num2}${num3}`;
-            
-            document.getElementById('p-id').innerText = `ID: ${uniqueID}`;
-
-            // 生成时间戳
+            // 时间戳
             const now = new Date();
             const dateStr = `- ${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} // ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')} -`;
             document.getElementById('p-date').innerText = dateStr;
