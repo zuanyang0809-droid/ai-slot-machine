@@ -394,16 +394,25 @@
                 margin: 0; 
             }
 
-          /* 4. 卡片整体 (铺满画面) */
             #print-area {
-                position: fixed; 
-                left: 0; top: 0;
-                width: 100mm; height: 148mm;
-                background-color: #FFEE00 !important; 
-                background-image: none !important;
+                position: fixed;
+                left: 0; 
+                top: 0;
                 
-                /* 🔴 新增：强制放大 150% */
-                zoom: 1.5; 
+                /* 🔴 关键修改开始：使用 Transform 强制放大 */
+                width: 100mm; 
+                height: 148mm;
+                
+                /* 放大 1.53 倍 (150%) */
+                transform: scale(1.5); 
+                /* 锚点设为左上角，保证对齐 */
+                transform-origin: top left;
+                /* 🔴 关键修改结束 */
+
+                background-color: var(--pop-yellow) !important;
+                /* 强制打印背景图形 */
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
                 
                 display: flex;
                 flex-direction: column;
